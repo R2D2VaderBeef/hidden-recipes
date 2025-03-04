@@ -15,6 +15,7 @@ from django.core.paginator import Paginator
 from .forms import RecipeForm
 
 
+
 def home(request):
     return render(request, 'website/home.html')
 
@@ -98,6 +99,14 @@ def profile(request):
         'profile_form': profile_form,
         'user_recipes': user_recipes  
     })
+
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        user = request.user
+        user.delete()        
+        return redirect('website:home')
+    return render(request,'website/delete_account.html')
 
 
 
