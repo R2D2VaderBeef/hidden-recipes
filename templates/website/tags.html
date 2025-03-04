@@ -1,0 +1,57 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    About Rango
+{% endblock %}
+
+{% block body_block %}
+    <h1>Hidden recipes</h1>
+    <div>
+        here is the tags page.<br />
+        <strong>{{ boldmessage }}</strong><br />
+    </div>
+    <p>I still have to create a view recipe and be able to click on the recipe to view the recipe here.</p>
+
+
+    <form method="GET" action="{% url 'website:tags' %}">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by tag..." />
+        <button type="submit">Search</button>
+    </form>
+
+<!-- Recipe List -->
+{% if recipes %}
+    <h3>Showing {{ recipes.paginator.count }} recipes</h3>
+
+    <ul>
+        {% for recipe in recipes %}
+            <li>{{ recipe.title }} - Tags: 
+                {% for tag in recipe.tags.all %}
+                    {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Pagination Controls -->
+    <div>
+        {% if recipes.has_previous %}
+            <a href="?q={{ query }}&page=1">First</a>
+            <a href="?q={{ query }}&page={{ recipes.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        Page {{ recipes.number }} of {{ recipes.paginator.num_pages }}
+
+        {% if recipes.has_next %}
+            <a href="?q={{ query }}&page={{ recipes.next_page_number }}">Next</a>
+            <a href="?q={{ query }}&page={{ recipes.paginator.num_pages }}">Last</a>
+        {% endif %}
+    </div>
+
+{% else %}
+    <p>No recipes found for this tag.</p>
+{% endif %}
+
+
+{% endblock %}
+

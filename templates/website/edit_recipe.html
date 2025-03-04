@@ -1,0 +1,16 @@
+{% extends 'website/base.html' %}
+
+{% block title_block %}
+    Edit Recipe: {{ recipe.title }}
+{% endblock %}
+
+{% block body_block %}
+<h1>Edit Recipe: {{ recipe.title }}</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save changes">
+</form>
+
+{% endblock %}

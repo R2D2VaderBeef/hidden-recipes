@@ -1,0 +1,50 @@
+{% extends 'website/base.html' %}
+
+{% block title_block %}
+    Profile
+{% endblock %}
+
+{% block body_block %}
+<h1>Welcome, {{ user.username }}!</h1>
+
+{% if user.userprofile.picture %}
+    <img src="{{ user.userprofile.picture.url }}" alt="Profile Picture" style="max-width: 150px;">
+{% endif %}
+
+
+<h3>Your Profile</h3>
+<p>Bio: {{ user.userprofile.bio }}</p>
+<p>Date Joined: {{ user.date_joined|date:"F j, Y" }}</p>
+
+
+
+<h3>Your Recipes</h3>
+{% if user_recipes %}
+    <ul>
+    {% for recipe in user_recipes %}
+        <li>
+            <a href="{% url 'website:edit_recipe' recipe.id %}">{{ recipe.title }}</a>  <!-- Link to edit the recipe -->
+            <p>{{ recipe.description }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not created any recipes yet.</p>
+{% endif %}
+
+
+
+
+<p>this is the profile page. I should probably make an profile edit page?</p>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ profile_form.as_p }}
+    <input type="submit" value="Save changes">
+</form>
+
+
+
+
+
+{% endblock %}

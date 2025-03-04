@@ -1,0 +1,14 @@
+{% extends 'website/base.html' %}
+
+{% block title_block %}
+    Create a New Recipe
+{% endblock %}
+
+{% block body_block %}
+    <h1>Create a New Recipe</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Recipe</button>
+    </form>
+{% endblock %}
