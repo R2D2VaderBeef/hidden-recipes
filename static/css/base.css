@@ -3,6 +3,10 @@
 :root {
     --theme_green: #257413;
     --theme_yellow: #fff34b;
+    --theme_black: #02111b;
+    --theme_red: #fe5e41;
+
+    --dull_yellow: #eae59d;
 }
 
 #start {
@@ -47,12 +51,16 @@
 }
 
 ul.tags li {
-    background: var(--theme_yellow);
-    border: #02111b 2px solid;
-    border-radius: 0.5em;
-    color: #02111b;
     list-style-type: none;
+}
+
+ul.tags li a {
     padding: 0.25em 0.5em;
+    border-radius: 0.5em;
+}
+
+ul.tags li a.active {
+    background-color: white;
 }
 
 body,
@@ -70,7 +78,7 @@ body {
     font-family: "Source Serif 4", serif;
     font-weight: 350;
     background-color: #eaf2e3;
-    color: #02111b;
+    color: var(--theme_black);
     padding: 0;
 }
 
@@ -88,10 +96,7 @@ header {
 li#avatar-icon {
     padding: 0;
     border-radius: 50%;
-}
-
-li#avatar-icon a {
-    padding: 0;
+    border: var(--theme_black) 2px solid;
     vertical-align: bottom;
     height: min-content;
     height: 48px;
@@ -99,9 +104,49 @@ li#avatar-icon a {
 
 }
 
-li#avatar-icon a img {
+li#avatar-icon img {
     padding: 0;
     vertical-align: bottom;
     height: min-content;
     border-radius: 50%;
+}
+
+main {
+    padding: 20px;
+}
+
+.new-post {
+    background-color: #ffcc00;
+}
+
+.profile-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avatar {
+    font-size: 40px;
+}
+
+.tabs {
+    margin-top: 10px;
+}
+
+.buttonLink {
+    background: var(--theme_yellow);
+    border: var(--theme_black) 2px solid;
+    color: var(--theme_black);
+    font-family: "Monomakh", serif;
+    border-radius: 0.5em;
+}
+
+.buttonLink:hover {
+    border-color: var(--theme_red);
 }
