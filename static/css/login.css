@@ -1,0 +1,53 @@
+.login-block {
+    margin: auto;
+    margin-top: 1.5em;
+    width: fit-content;
+    background-color: white;
+    border-radius: 0.75em;
+    border: var(--theme_black) 2px solid;
+    padding: 1em 1em;
+}
+
+.login-block h1 {
+    text-align: center;
+}
+
+.login-block input {
+    padding: 0.3em 0.5em;
+    margin: 0.5em 0;
+    box-sizing: border-box;
+    border: var(--theme_black) 2px solid;
+    border-radius: 0.5em;
+    width: 100%;
+    font-size: 1.2em;
+    font-family: "Source Serif 4", serif;
+    transition-duration: 0.2s;
+}
+
+.login-block input:hover, .login-block input:focus {
+    border-color: var(--theme_red);
+}
+
+.login-block input[type=submit] {
+    background-color: var(--theme_black);
+    color: var(--theme_yellow);
+    font-weight: 600;
+    transition-duration: 0s;
+}
+
+.login-block input[type=submit]:hover, .login-block input[type=submit]:focus {
+    background-color: var(--theme_green);   
+    border-color: var(--theme_green);
+}
+
+.login-block label {
+    font-size: 1.2em;
+    font-weight: 400;
+}
+
+.login-byline {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 0.5em 0;
+}
+
