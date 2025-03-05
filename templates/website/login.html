@@ -2,11 +2,12 @@
 {% load static %}
 
 {% block title_block %}
-    Log in
+    Log In
 {% endblock %}
 
 {% block style_block %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
 {% endblock %}
 
 {% block login_active %}
@@ -16,7 +17,13 @@ active
 {% block body_block %}
 <div class="login-block">
     <h1>Log In</h1>
-    <p class="login-byline">Welcome back!</p>
+    {% if error %}
+        <p class="login-error">
+            {{ error_message }}
+        </p>
+    {% else %}
+        <p class="login-byline">Welcome back!</p>
+    {% endif %}
     <form id="login_form" method="post" action="{% url 'website:login' %}">
         {% csrf_token %}
         <label for="username">Username</label><br />
