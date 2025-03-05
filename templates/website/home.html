@@ -7,6 +7,11 @@
 
 {% block style_block %}
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
+{% endblock %}
+
+{% block discover_active %}
+active
 {% endblock %}
 
 {% block body_block %}
@@ -19,12 +24,17 @@
                 <span class="rcp-time">14 hours ago</span>
             </div>
             <h3 class="rcp-title">Home-style chicken curry</h3>
-            <p class="rcp-desc">This authentic recipe traces its roots back to my father's upbringing in a
-                Bihari household in Northern India. A fairly mild dish (with options to increase the spice),
-                this curry pairs well with plain rice or even naan and some vegetables.</p>
+            <p class="rcp-desc">
+                <span>This authentic recipe traces its roots back to my father's upbringing in a
+                    Bihari household in Northern India. A fairly mild dish (with options to increase the spice),
+                    this curry pairs well with plain rice or even naan and some vegetables.</span>
+            </p>
             <a href="#">Read full recipe</a>
             <div class="rcp-tags">
-                <span>Indian</span> <span>Chicken</span> <span>Tomato</span> <span>Onion</span>
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags=indian">Indian</a> 
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chicken">Chicken</a> 
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags=tomato">Tomato</a> 
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags=onion">Onion</a>
             </div>
             <div class="recipe-footer">
                 <span class="likes"><img src="static/img/like.svg" /> 12</span>
@@ -48,10 +58,12 @@
                 <span>This Chinese-inspired dish requires a few ingredients you may not already have -
                     but its delicious flavour makes acquiring them well worth it! I recommend serving it with
                     noodles.</span>
-                <a href="#">Read full recipe</a>
             </p>
+            <a href="#">Read full recipe</a>
             <div class="rcp-tags">
-                <span>Chinese</span> <span>Chicken</span> <span>Capsicum</span>
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chinese">Chinese</a> 
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chicken">Chicken</a> 
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags=capsicum">Capsicum</a>
             </div>
             <div class="recipe-footer">
                 <span class="likes"><img src="static/img/like.svg" /> 6</span>
@@ -65,8 +77,8 @@
 </section>
 
 <div class="pagination">
-    <button class="btn">Previous Page</button>
-    <button class="btn">Next Page</button>
+    <button class="btn buttonLink">Previous Page</button>
+    <button class="btn buttonLink">Next Page</button>
 </div>
 
 
