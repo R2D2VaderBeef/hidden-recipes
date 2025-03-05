@@ -3,7 +3,6 @@ article {
     margin: 1.25rem auto;
     background: #fff;
     padding: 1rem;
-    border-radius: 0.75rem;
     border: var(--theme_black) 2px solid
 }
 
@@ -51,9 +50,8 @@ article {
 }
 
 .recipe-card {
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    padding: 1em;
+    border-radius: 0.75em;
     display: flex;
     flex-direction: row;
 }
