@@ -1,0 +1,27 @@
+{% extends 'website/base.html' %}
+
+{% block title_block %}
+    Delete Account
+{% endblock %}
+
+{% block body_block %}
+<p>Are you sure you want to delete account?</p>
+
+<form method="post" action="{% url 'website:delete_account' %}">
+    {% csrf_token %}
+    <input type="submit" name="submit" value="Yes" />
+
+</form><br />
+
+<form method="post" action="{% url 'website:profile' %}">
+    {% csrf_token %}
+    <input type="submit" name="submit" value="Cancel" />
+
+</form><br />
+
+{% endblock %}
+
+
+
+
+
