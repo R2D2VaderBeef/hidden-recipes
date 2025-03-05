@@ -1,0 +1,147 @@
+.btn {
+    background-color: var(--theme_yellow);
+    border: none;
+    padding: 10px 15px;
+    font-family: "Monomakh", serif;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.new-post {
+    background-color: #ffcc00;
+}
+
+article {
+    max-width: 70rem;
+    margin: 1.25rem auto;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: #02111b 2px solid
+}
+
+.profile-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+main {
+    padding: 20px;
+}
+
+.profile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avatar {
+    font-size: 40px;
+}
+
+.tabs {
+    margin-top: 10px;
+}
+
+.recipes {
+    margin-top: 20px;
+}
+
+.rcp-avatar {
+    vertical-align: -0.5rem;
+    border-radius: 50%;
+    border: #02111b 2px solid;
+    margin-right: 0.5rem;
+}
+
+.rcp-author {
+    font-weight: 400;
+    margin-right: 0.5rem;
+}
+
+.rcp-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    position: relative;
+}
+
+.rcp-desc a {
+    white-space: nowrap;
+    color: blue;
+    text-decoration: underline;
+    position: relative;
+}
+
+.rcp-desc a.inline {
+    display: inline;
+}
+
+.rcp-desc.ellipsis::after {
+    content: "... ";
+}
+
+.rcp-desc.ellipsis a {
+    display: inline;
+}
+
+.recipe-card {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.recipe-card h3.rcp-title {
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+.recipe-footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1em;
+}
+
+.recipe-footer span img {
+    height: 1em;
+    vertical-align: middle;
+}
+
+.recipe-image {
+    align-content: center;
+}
+
+.rcp-tags {
+    height: 2rem;
+    display: flex;
+    justify-self: flex-start;
+    gap: 0.5em;
+}
+
+.rcp-tags span {
+    display: inline-block;
+    vertical-align: middle;
+    background-color: var(--theme_yellow);
+    border: #02111b 2px solid;
+    font-family: "Monomakh", serif;
+    height: fit-content;
+    margin: auto;
+    padding: 0.125em 0.25em;
+    border-radius: 0.25em;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}

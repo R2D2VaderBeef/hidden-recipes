@@ -2,15 +2,72 @@
 {% load static %}
 
 {% block title_block %}
-    About Rango
+    Discover
+{% endblock %}
+
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
 {% block body_block %}
-    <h1>Hidden recipes</h1>
-    <div>
-        here is the home page.<br />
-        <strong>{{ boldmessage }}</strong><br />
-    </div>
+<section class="recipes">
+    <article class="recipe-card">
+        <div class="recipe-text">
+            <div class="recipe-header">
+                <img class="rcp-avatar" src="https://placehold.jp/25x25.png" alt="">
+                <span class="rcp-author">foodlover99</span>
+                <span class="rcp-time">14 hours ago</span>
+            </div>
+            <h3 class="rcp-title">Home-style chicken curry</h3>
+            <p class="rcp-desc">This authentic recipe traces its roots back to my father's upbringing in a
+                Bihari household in Northern India. A fairly mild dish (with options to increase the spice),
+                this curry pairs well with plain rice or even naan and some vegetables.</p>
+            <a href="#">Read full recipe</a>
+            <div class="rcp-tags">
+                <span>Indian</span> <span>Chicken</span> <span>Tomato</span> <span>Onion</span>
+            </div>
+            <div class="recipe-footer">
+                <span class="likes"><img src="static/img/like.svg" /> 12</span>
+                <span class="comments"><img src="static/img/comment.svg" /> 0</span>
+            </div>
+        </div>
+        <div class="recipe-image">
+            <img src="https://placehold.jp/240x135.png" alt="Home-style chicken curry">
+        </div>
+    </article>
+
+    <article class="recipe-card">
+        <div class="recipe-text">
+            <div class="recipe-header">
+                <img class="rcp-avatar" src="https://placehold.jp/25x25.png" alt="">
+                <span class="rcp-author">foodlover99</span>
+                <span class="rcp-time">2 weeks ago</span>
+            </div>
+            <h3 class="rcp-title">Cashew nut chicken</h3>
+            <p class="rcp-desc">
+                <span>This Chinese-inspired dish requires a few ingredients you may not already have -
+                    but its delicious flavour makes acquiring them well worth it! I recommend serving it with
+                    noodles.</span>
+                <a href="#">Read full recipe</a>
+            </p>
+            <div class="rcp-tags">
+                <span>Chinese</span> <span>Chicken</span> <span>Capsicum</span>
+            </div>
+            <div class="recipe-footer">
+                <span class="likes"><img src="static/img/like.svg" /> 6</span>
+                <span class="comments"><img src="static/img/comment.svg" /> 3</span>
+            </div>
+        </div>
+        <div class="recipe-image">
+            <img src="https://placehold.jp/240x135.png" alt="Cashew nut chicken">
+        </div>
+    </article>
+</section>
+
+<div class="pagination">
+    <button class="btn">Previous Page</button>
+    <button class="btn">Next Page</button>
+</div>
 
 
 {% endblock %}

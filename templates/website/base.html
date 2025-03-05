@@ -5,17 +5,48 @@
 <html>
     <head lang="en">
         <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>
             {% block title_block %}
-            Hidden recipes
+            Unknown Page
             {% endblock %}
+            - Hidden Recipes
         </title>
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        {% block style_block %}
+        {% endblock %}
     </head>
+
     <body>
-        <div>
+        <header>
+            <div id="start"><a>Hidden Recipes</a></div>
+            <div id="centre">
+                <ul class="tags">
+                    <li><a href="{% url 'website:home' %}">Discover</a></li>
+                    <li><a href="{% url 'website:tags' %}">Tags</a></li>
+                </ul>
+            </div>
+            <div id="end">
+                <ul class="tags">
+                    {% if user.is_authenticated %}
+                    <!-- Show these links when the user is logged in -->
+                    <li><a href="{% url 'website:logout' %}">Logout</a></li>
+                    <li><a href="{% url 'website:profile' %}">Profile</a></li>
+                    <li><a href="{% url 'website:create_recipe' %}">Create Recipe</a></li>
+                    <li id="avatar-icon"><a><img src="https://placehold.jp/48x48.png" alt=""></a></li>
+                {% else %}
+                    <li><a href="{% url 'website:register' %}">Sign Up</a></li>
+                    <li><a href="{% url 'website:login' %}">Log In</a></li>
+                    <li id="avatar-icon"><a><img src="https://placehold.jp/48x48.png" alt=""></a></li>
+                {% endif %}
+                </ul>
+            </div>
+        </header>
+        
+        <main>
             {% block body_block %}
             {% endblock %}
-        </div>
+        </main>
 
         <hr />
         <div>
@@ -26,9 +57,6 @@
                 <a href="{% url 'website:profile' %}">Profile</a>
                 <li><a href="{% url 'website:create_recipe' %}">Create Recipe</a></li>
                 <li><a href="{% url 'website:delete_account' %}">Delete Account</a></li>
-
-
-
                 {% else %}
                 <!-- Show these links when the user is NOT logged in -->
                 <li><a href="{% url 'website:register' %}">Sign Up</a></li>
@@ -38,7 +66,7 @@
                 <li><a href="{% url 'website:home' %}">Home</a></li>
                 <li><a href="{% url 'website:tags' %}">Tags</a></li>
 
-                </ul>
+            </ul>
         </div>
     </body>
 </html>
