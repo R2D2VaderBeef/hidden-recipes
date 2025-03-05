@@ -5,6 +5,10 @@
     Login
 {% endblock %}
 
+{% block login_active %}
+active
+{% endblock %}
+
 {% block body_block %}
 <h1>Login to Rango</h1>
 <form id="login_form" method="post" action="{% url 'website:login' %}">
