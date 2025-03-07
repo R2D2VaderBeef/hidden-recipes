@@ -67,10 +67,9 @@ def user_login(request):
                 login(request, user)
                 return redirect(reverse('website:home'))
             else:
-                return HttpResponse("Your account is disabled.")
+                return render(request, 'website/login.html', context = {"error": True, "error_message": "Your account has been disabled."})
         else:
-            print(f"Invalid login details: {username}, {password}")
-            return HttpResponse("Invalid login details supplied.")
+            return render(request, 'website/login.html', context = {"error": True, "error_message": "Incorrect username or password."})
     else:
         return render(request, 'website/login.html')
     

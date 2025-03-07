@@ -22,22 +22,22 @@
             <div id="start"><a>Hidden Recipes</a></div>
             <div id="centre">
                 <ul class="tags">
-                    <li><a href="{% url 'website:home' %}">Discover</a></li>
-                    <li><a href="{% url 'website:tags' %}">Tags</a></li>
+                    <li><a href="{% url 'website:home' %}" class="{% block discover_active %}{% endblock %} buttonLink">Discover</a></li>
+                    <li><a href="{% url 'website:tags' %}" class="{% block tags_active %}{% endblock %} buttonLink">Tags</a></li>
                 </ul>
             </div>
             <div id="end">
                 <ul class="tags">
                     {% if user.is_authenticated %}
                     <!-- Show these links when the user is logged in -->
-                    <li><a href="{% url 'website:logout' %}">Logout</a></li>
-                    <li><a href="{% url 'website:profile' %}">Profile</a></li>
-                    <li><a href="{% url 'website:create_recipe' %}">Create Recipe</a></li>
-                    <li id="avatar-icon"><a><img src="https://placehold.jp/48x48.png" alt=""></a></li>
+                    <li><a href="{% url 'website:profile' %}" class="{% block profile_active %}{% endblock %} buttonLink">Profile</a></li>
+                    <li><a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %} buttonLink">Create Recipe</a></li>
+                    <li><a href="{% url 'website:logout' %}" class="buttonLink">Logout</a></li>
+                    <li id="avatar-icon"><img src="https://placehold.jp/48x48.png" alt=""></li>
                 {% else %}
-                    <li><a href="{% url 'website:register' %}">Sign Up</a></li>
-                    <li><a href="{% url 'website:login' %}">Log In</a></li>
-                    <li id="avatar-icon"><a><img src="https://placehold.jp/48x48.png" alt=""></a></li>
+                    <li><a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %} buttonLink">Sign Up</a></li>
+                    <li><a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %} buttonLink">Log In</a></li>
+                    <li id="avatar-icon"><img src="https://placehold.jp/48x48.png" alt=""></li>
                 {% endif %}
                 </ul>
             </div>
@@ -48,25 +48,5 @@
             {% endblock %}
         </main>
 
-        <hr />
-        <div>
-            <ul>
-                {% if user.is_authenticated %}
-                <!-- Show these links when the user is logged in -->
-                <li><a href="{% url 'website:logout' %}">Logout</a></li>
-                <a href="{% url 'website:profile' %}">Profile</a>
-                <li><a href="{% url 'website:create_recipe' %}">Create Recipe</a></li>
-                <li><a href="{% url 'website:delete_account' %}">Delete Account</a></li>
-                {% else %}
-                <!-- Show these links when the user is NOT logged in -->
-                <li><a href="{% url 'website:register' %}">Sign Up</a></li>
-                <li><a href="{% url 'website:login' %}">Login</a></li>
-                {% endif %}
-                <!-- Outside the conditional statements, ALWAYS show -->
-                <li><a href="{% url 'website:home' %}">Home</a></li>
-                <li><a href="{% url 'website:tags' %}">Tags</a></li>
-
-            </ul>
-        </div>
     </body>
 </html>

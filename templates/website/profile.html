@@ -4,6 +4,10 @@
     Profile
 {% endblock %}
 
+{% block profile_active %}
+active
+{% endblock %}
+
 {% block body_block %}
 <h1>Welcome, {{ user.username }}!</h1>
 
@@ -42,8 +46,7 @@
     {{ profile_form.as_p }}
     <input type="submit" value="Save changes">
 </form>
-
-
+<a href="{% url 'website:delete_account' %}">Delete Account</a>
 
 
 
