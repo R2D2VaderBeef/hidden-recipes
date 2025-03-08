@@ -109,6 +109,7 @@ li#avatar-icon img {
     vertical-align: bottom;
     height: min-content;
     border-radius: 50%;
+    width: 100%;
 }
 
 main {
