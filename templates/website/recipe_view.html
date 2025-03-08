@@ -1,0 +1,55 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    {{ recipe.title }}
+{% endblock %}
+
+{% block body_block %}
+    <h1>{{ recipe.title }}</h1>
+    <p><strong>Description:</strong> {{ recipe.description }}</p>
+    <p><strong>Likes:</strong> <span id="likes-count">{{ recipe.likes.count }}</span></p>
+
+<button id="like-button" data-recipe-id="{{ recipe.id }}">
+    {% if user in recipe.likes.all %}
+        Unlike
+    {% else %}
+        Like
+    {% endif %}
+</button>
+
+<script>
+document.getElementById("like-button").addEventListener("click", function() {
+    let recipeId = this.getAttribute("data-recipe-id");
+    let button = this;
+    let likeCount = document.getElementById("likes-count");
+
+    fetch(`/like/${recipeId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        likeCount.innerText = data.likes_count;
+        button.innerText = data.liked ? "Unlike" : "Like";
+    });
+});
+</script>
+
+
+    <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
+    <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+    <p><strong>Tags:</strong> 
+        {% for tag in recipe.tags.all %}
+            {{ tag.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+    <p><strong>Posted by:</strong> {{ recipe.poster.username }}</p>
+
+    {% if user == recipe.poster %}
+    <a href="{% url 'website:edit_recipe' recipe.id %}">Edit Recipe</a>
+{% endif %}
+{% endblock %}

@@ -14,14 +14,20 @@ from .models import Tag, Recipe
 from django.core.paginator import Paginator
 from .forms import RecipeForm
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
-    return render(request, 'website/home.html')
+    recipes = Recipe.objects.all().order_by('-id')  # Get all recipes, newest first
+    return render(request, 'website/home.html', {'recipes': recipes})
 
 def tags(request):
     return render(request, 'website/tags.html')
 
+def recipe_view(request):
+    return render(request, 'website/recipe_view.html')
 
 def register(request):
     registered = False
@@ -90,7 +96,7 @@ def profile(request):
 
         if profile_form.is_valid():
             profile_form.save()
-            return redirect('website:profile')  # Redirect to the profile page after saving
+            return redirect('website:profile')
     else:
         profile_form = UserProfileForm(instance=user_profile)
 
@@ -136,8 +142,8 @@ def create_recipe(request):
             recipe = form.save(commit=False)
             recipe.poster = request.user  # Set the author of the recipe
             recipe.save()  
-            form.save_m2m()  # Save the many-to-many relationships (tags)
-            return redirect('website:home')  # Redirect to homepage after saving
+            form.save_m2m() 
+            return redirect('website:home') 
     else:
         form = RecipeForm()
 
@@ -151,9 +157,35 @@ def edit_recipe(request, recipe_id):
     if request.method == 'POST':
         form = RecipeForm(request.POST, instance=recipe)
         if form.is_valid():
-            form.save()  # Save changes to the recipe
-            return redirect('website:profile')  # Redirect to the profile page after saving
+            form.save()  
+            return redirect('website:profile')  
     else:
         form = RecipeForm(instance=recipe)
 
     return render(request, 'website/edit_recipe.html', {'form': form, 'recipe': recipe})
+
+
+
+def view_recipe(request, recipe_id):
+    try:
+        recipe = Recipe.objects.get(id=recipe_id)
+    except Recipe.DoesNotExist:
+        return HttpResponse("Recipe not found", status=404)
+
+    context = {'recipe': recipe}
+    return render(request, 'website/recipe_view.html', context)
+
+
+@login_required
+def like_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user = request.user
+
+    if user in recipe.likes.all():
+        recipe.likes.remove(user)  # Unlike if already liked
+        liked = False
+    else:
+        recipe.likes.add(user)  # Like if not already liked
+        liked = True
+
+    return JsonResponse({"liked": liked, "likes_count": recipe.likes.count()})
