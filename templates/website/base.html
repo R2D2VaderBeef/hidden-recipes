@@ -38,7 +38,7 @@
                 {% else %}
                     <li><a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %} buttonLink">Register</a></li>
                     <li><a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %} buttonLink">Log In</a></li>
-                    <li id="avatar-icon"><img src="https://placehold.jp/48x48.png" alt=""></li>
+                    <li id="avatar-icon"><img src="{% static 'img/user_yellow.png' %}" alt=""></li>
                 {% endif %}
                 </ul>
             </div>
