@@ -173,5 +173,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# User-generated media. Should be present in a separate population source folder
-media/
+# User-generated media. Should be present in a separate population source folder eccept for default files
+/media/*
+!media/defaults/

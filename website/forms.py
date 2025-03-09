@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.models import User
 from website.models import UserProfile
@@ -9,12 +10,20 @@ class UserForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'password',)
+        fields = ("email", "username", "password",)
+        help_texts = {
+            'username': _('Letters, digits and @/./+/-/_ only.'),
+        }
+        error_messages = {
+            'username': {
+                'unique': _("That username is already taken. Please choose another username."),
+            },
+        }
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ( 'picture','bio')
+        fields = ('picture','bio')
 
 
 class RecipeForm(forms.ModelForm):
