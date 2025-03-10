@@ -5,27 +5,31 @@
     Register
 {% endblock %}
 
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
 {% block signup_active %}
 active
 {% endblock %}
 
 {% block body_block %}
-<h1>Register for Hidden Recipes</h1>
-{% if registered %}
-Rango says: <strong>thank you for registering!</strong>
-<a href="{% url 'website:home' %}">Return to the homepage.</a><br />
-{% else %}
-<strong>register here!</strong><br />
-<form id="user_form" method="post" action="{% url 'website:register' %}"enctype="multipart/form-data">
+<div class="register-block">
+    <h1>Register</h1>
+    {% if registered %}
+        <p class="register-success">
+            Successfully registered!
+            <a href="{% url 'website:login' %}">Log in</a><br />
+        </p>
+    {% else %}
+        <form id="user_form" method="post" action="{% url 'website:register' %}"enctype="multipart/form-data">
+            {% csrf_token %}
 
-    {% csrf_token %}
+            {{ user_form.as_p }}
 
-    <!-- Display each form -->
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-
-    <!-- Provide a button to click to submit the form. -->
-    <input type="submit" name="submit" value="Register" />
-</form>
-{% endif %}
+            <input type="submit" name="submit" value="Register" />
+        </form>
+    {% endif %}
+</div>
 {% endblock %}
