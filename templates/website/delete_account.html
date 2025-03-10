@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load static %}
+
 {% block title_block %}
     Delete Account
 {% endblock %}
@@ -14,10 +16,20 @@
 
 
 
+
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/delete_account.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
+
+
 {% block body_block %}
 
 <div class="delete_account-block">
-    <h3>Are you sure you want to delete account?</h3>
+    <h3>Are you sure you want to delete</h3>
+    <h3>account?</h3>
+
     {% if error %}
         <p class="delete_account-error">
             {{ error_message }}
