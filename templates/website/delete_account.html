@@ -17,8 +17,8 @@
 {% block body_block %}
 
 <div class="delete_account-block">
-    <h3>Are you sure you want to delete</h3>
-    <h3>account?</h3>
+    <h3>Are you sure you want to delete your account?</h3>
+    <br />
 
     {% if error %}
         <p class="delete_account-error">
@@ -31,14 +31,14 @@
 <form method="post" action="{% url 'website:delete_account' %}">
     {% csrf_token %}
     <input type="submit" name="submit" value="Yes" />
+</form>
 
-</form><br />
-
-<form method="post" action="{% url 'website:profile' %}">
-    {% csrf_token %}
-    <input type="submit" name="submit" value="Cancel" />
-
-</form><br />
+<input type="submit" value="Cancel" onclick="goBack()"/>
+<script>
+    function goBack() {
+        window.location.href = "{% url 'website:profile' %}"
+    }
+</script>
 
 {% endblock %}
 
