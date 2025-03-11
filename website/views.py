@@ -148,3 +148,29 @@ def edit_recipe(request, recipe_id):
         form = RecipeForm(instance=recipe)
 
     return render(request, 'website/edit_recipe.html', {'form': form, 'recipe': recipe})
+
+
+
+def view_recipe(request, recipe_id):
+    try:
+        recipe = Recipe.objects.get(id=recipe_id)
+    except Recipe.DoesNotExist:
+        return HttpResponse("Recipe not found", status=404)
+
+    context = {'recipe': recipe}
+    return render(request, 'website/recipe_view.html', context)
+
+
+@login_required
+def like_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user = request.user
+
+    if user in recipe.likes.all():
+        recipe.likes.remove(user)
+        liked = False
+    else:
+        recipe.likes.add(user)
+        liked = True
+
+    return JsonResponse({"liked": liked, "likes_count": recipe.likes.count()})
