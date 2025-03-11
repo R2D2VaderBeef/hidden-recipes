@@ -11,6 +11,7 @@ article {
     border-radius: 50%;
     border: #02111b 2px solid;
     margin-right: 0.5rem;
+    width: 25px;
 }
 
 .rcp-author {
@@ -56,6 +57,10 @@ article {
     flex-direction: row;
 }
 
+.recipe-text {
+    flex-grow: 1;
+}
+
 .recipe-card h3.rcp-title {
     font-size: 1.75rem;
     font-weight: 500;
@@ -76,6 +81,7 @@ article {
 
 .recipe-image {
     align-content: center;
+    width: 320px;
 }
 
 .rcp-tags {

@@ -27,6 +27,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag, related_name="recipes") 
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recipes")
     date = models.DateTimeField()
+    picture = models.ImageField(upload_to='recipe_images', default="defaults/default_16x10.png")
 
     def __str__(self):
         return self.title
@@ -42,3 +43,4 @@ class Comment(models.Model):
     text = models.CharField(max_length=255)
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="comments")
+    picture = models.ImageField(upload_to='comment_images', blank=True)
