@@ -1,27 +1,34 @@
-input {
+input, textarea, form button {
     padding: 0.3em 0.5em;
     margin: 0.5em 0;
     box-sizing: border-box;
     border: var(--theme_black) 2px solid;
     border-radius: 0.5em;
-    width: 100%;
     font-size: 1.2em;
     font-family: "Source Serif 4", serif;
     transition-duration: 0.2s;
 }
 
-input:hover, .input:focus {
+input, textarea {
+    width: 100%;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input:hover, input:focus, textarea:hover, textarea:focus {
     border-color: var(--theme_red);
 }
 
-input[type=submit] {
+input[type=submit], form button {
     background-color: var(--theme_black);
     color: var(--theme_yellow);
     font-weight: 600;
     transition-duration: 0s;
 }
 
-input[type=submit]:hover, .input[type=submit]:focus {
+input[type=submit]:hover, input[type=submit]:focus, form button:hover {
     background-color: var(--theme_green);   
     border-color: var(--theme_green);
 }

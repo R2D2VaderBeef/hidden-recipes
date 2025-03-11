@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 from website.forms import UserForm, UserProfileForm
 
@@ -13,6 +12,8 @@ from django.shortcuts import render
 from .models import Tag, Recipe, UserProfile
 from django.core.paginator import Paginator
 from .forms import RecipeForm
+
+from django.core import serializers
 
 
 
@@ -122,17 +123,19 @@ def tags_view(request):
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.poster = request.user  # Set the author of the recipe
-            recipe.save()  
-            form.save_m2m()  # Save the many-to-many relationships (tags)
-            return redirect('website:home')  # Redirect to homepage after saving
+        pass
+        #form = RecipeForm(request.POST)
+        #if form.is_valid():
+        #    recipe = form.save(commit=False)
+        #    recipe.poster = request.user  # Set the author of the recipe
+        #    recipe.save()  
+        #    form.save_m2m()  # Save the many-to-many relationships (tags)
+        #    return redirect('website:home')  # Redirect to homepage after saving - should redirect to the newly created recipe once that's possible
     else:
-        form = RecipeForm()
+        #form = RecipeForm()
+        pass
 
-    return render(request, 'website/create_recipe.html', {'form': form})
+    return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
 
 
 @login_required

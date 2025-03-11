@@ -1,18 +1,41 @@
 {% extends 'website/base.html' %}
+{% load static %}
 
 {% block title_block %}
-    Create a New Recipe
+    New Recipe
 {% endblock %}
 
 {% block create_active %}
 active
 {% endblock %}
 
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/create_recipe.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <script src="{% static 'js/create_recipe.js' %}" data-tags="{{ tags }}"></script>
+    <script src="https://unpkg.com/cropperjs"></script>
+{% endblock %}
+
 {% block body_block %}
-    <h1>Create a New Recipe</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Recipe</button>
+<div class="create-block">
+    <h1>New Recipe</h1>
+    <p>Share a delicious dish with the world!</p>
+    
+    <form id="recipeForm">
+        <label for="title">Title</label><br />
+        <input type="text" name="title" id="recipeTitle" maxlength="128" placeholder="What's your dish called?" required><br />
+        <label for="description">Description<br /><span class="mini-helptext">This is displayed in the feed and anywhere else the post appears.</span></label><br />
+        <textarea name="description" id="recipeDescription" maxlength="512" rows="4" placeholder="Tell us a bit about your dish" required></textarea></br>
+
+        <label for="picture">Cover Image</label>
+        <input type="file" id="recipePicture" name="picture" accept="image/*" required />
+        <div id="cropper-help">
+            <p>Scroll to zoom, drag to move the selection.</p>
+        </div>
+        <div id="cropper-container"></div>
+        <div id="cropper-output"></div>
+        <input type="submit" value="Post Recipe"> <span>You'll be able to edit and delete your recipe after posting.</span>
     </form>
+
+</div>
 {% endblock %}
