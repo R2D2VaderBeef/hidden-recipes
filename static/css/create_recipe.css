@@ -10,7 +10,7 @@
 }
 
 form {
-    margin-top: 1em;
+    margin-top: 0.5em;
 }
 
 #recipeForm input[type="submit"] {
@@ -23,7 +23,12 @@ form {
     font-weight: 350;
 }
 
-#cropper-container {
+.shortcut {
+    font-size: 0.9em;
+    padding-bottom: 0.5em;
+}
+
+#cropper-container, #instructions-flex, .single-step {
     display: flex;
     flex-direction: row;
 }
@@ -47,4 +52,33 @@ cropper-viewer {
 #cropper-help {
     display: none;
     padding-bottom: 0.6em;
+}
+
+label {
+    display: block;
+    padding-top: 0.3em;
+}
+
+.single-ingredient input, #add-ingredient {
+    width: 50%;
+    margin-right: 0.5em;
+}
+
+.single-ingredient button {
+    color: white;
+}
+
+.single-ingredient button:hover {
+    background-color: var(--theme_red);
+    border: 2px solid var(--theme_red);
+}
+
+#instructions-flex textarea, .single-step textarea {
+    margin-right: 0.8em;
+}
+
+.handle {
+    font-size: 1.8em;
+    padding: 0.9em 0.5em 0.9em 0;
+    cursor: grab;
 }
