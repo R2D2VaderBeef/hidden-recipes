@@ -1,4 +1,4 @@
-input, textarea, form button {
+input, textarea, form button, .multiselect-dropdown {
     padding: 0.3em 0.5em;
     margin: 0.5em 0;
     box-sizing: border-box;
@@ -17,7 +17,7 @@ textarea {
     resize: vertical;
 }
 
-input:hover, input:focus, textarea:hover, textarea:focus {
+input:hover, input:focus, textarea:hover, textarea:focus, .multiselect-dropdown:hover, .multiselect-dropdown:focus {
     border-color: var(--theme_red);
 }
 

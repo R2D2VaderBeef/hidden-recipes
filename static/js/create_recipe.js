@@ -1,5 +1,4 @@
 const data = document.currentScript.dataset;
-console.log(JSON.parse(data.tags));
 let cropper;
 let recipeCount = 0;
 let stepsCount = 0;
@@ -9,13 +8,25 @@ window.addEventListener("load", function (event) {
     document.getElementById("recipeForm").addEventListener("submit", submitRecipe);
     document.getElementById("recipePicture").addEventListener("change", cropPhoto);
     document.getElementById("add-ingredient").addEventListener("keypress", enterKeyAddIngredient);
-    this.document.getElementById("add-step").addEventListener("keypress", ctrlEnterAddStep)
+    document.getElementById("add-step").addEventListener("keypress", ctrlEnterAddStep)
     new Sortable(document.getElementById("instructions-container"), {
         draggable: ".single-step",
         handle: ".handle",
         animation: 150
     })
+    addTags();
 });
+
+function addTags() {
+    let tags = JSON.parse(data.tags);
+    let select = document.getElementById("tags");
+    for (let i = 0; i < tags.length; i++) {
+        let option = document.createElement("option");
+        option.value = tags[i].pk;
+        option.textContent = tags[i].fields.name;
+        select.appendChild(option);
+    }
+}
 
 async function submitRecipe(e) {
     e.preventDefault();

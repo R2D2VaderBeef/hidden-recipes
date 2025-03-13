@@ -54,7 +54,7 @@ cropper-viewer {
     padding-bottom: 0.6em;
 }
 
-label {
+label:not(.multiselect-dropdown label) {
     display: block;
     padding-top: 0.3em;
 }
@@ -81,4 +81,59 @@ label {
     font-size: 1.8em;
     padding: 0.9em 0.5em 0.9em 0;
     cursor: grab;
+}
+
+.multiselect-dropdown {
+    display: block;
+}
+
+.multiselect-dropdown-search {
+    font-size: 1em;
+}
+
+.multiselect-dropdown label {
+    font-size: 1em;
+}
+
+select {
+    width: 50%;
+}
+
+.multiselect-dropdown-list-wrapper {
+    padding: 0.2em 0.5em;
+    border: solid 2px var(--theme_black);
+    border-radius: 0.5em;
+}
+
+.multiselect-dropdown-list {
+    max-height: 10em;
+}
+
+.multiselect-dropdown-list input {
+    height: 0.7em;
+    width: 1em;
+}
+
+.multiselect-dropdown span.optext {
+    background: var(--theme_yellow);
+    border: var(--theme_black) 2px solid;
+    border-radius: 0.25em;
+    color: var(--theme_black);
+    font-family: "Monomakh", serif;
+    font-size: 0.94em;
+    margin-bottom: 0.5em;
+    padding: 1px 0.5em;
+}
+
+.multiselect-dropdown span.optext .optdel {
+    margin-right: 0;
+}
+
+.multiselect-dropdown span.optext .optdel:hover {
+    color: var(--theme_red);
+}
+
+.multiselect-dropdown span.placeholder {
+    color: #757575;
+    font-weight: 400;
 }

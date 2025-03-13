@@ -10,11 +10,13 @@ active
 {% endblock %}
 
 {% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/form.css' %}">
-    <link rel="stylesheet" href="{% static 'css/create_recipe.css' %}">
     <script src="{% static 'js/create_recipe.js' %}" data-tags="{{ tags }}"></script>
     <script src="{% static 'js/third-party/Sortable.js' %}"></script>
+    <script src="{% static 'js/third-party/multiselect-dropdown.js' %}"></script>
     <script src="https://unpkg.com/cropperjs"></script>
+
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/create_recipe.css' %}">
 {% endblock %}
 
 {% block body_block %}
@@ -27,6 +29,10 @@ active
         <input type="text" name="title" id="recipe-title" maxlength="128" placeholder="What's your dish called?" required><br />
         <label for="description">Description<br /><span class="mini-helptext">This is displayed in the feed and anywhere else the post appears.</span></label>
         <textarea name="description" id="recipe-description" maxlength="512" rows="4" placeholder="Tell us a bit about your dish" required></textarea><br />
+        	
+        <label for="tags">Tags<br /><span class="mini-helptext">Add tags related to your dish's cuisine and ingredients to make it easier to find.</span></label>
+        <select name="tags" id="tags" multiple multiselect-search="true" multiselect-max-items="100">
+        </select>
 
         <label for="picture">Cover Image</label>
         <input type="file" id="recipePicture" name="picture" accept="image/*" required />
