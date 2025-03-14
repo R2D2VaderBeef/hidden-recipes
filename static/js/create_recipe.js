@@ -30,6 +30,63 @@ function addTags() {
 
 async function submitRecipe(e) {
     e.preventDefault();
+    let title = document.getElementById("recipe-title").value;
+    let description = document.getElementById("recipe-description").value;
+
+    let selectedTags = document.getElementById("tags").selectedOptions;
+    let tags = [];
+    for (let i = 0; i < selectedTags.length; i++) {
+        tags.push(selectedTags[i].value);
+    }
+
+    let file = null;
+    if (document.getElementById("cropper-output").children.length > 0) {
+        let blob = await new Promise(resolve => document.getElementById("cropper-output").children[0].toBlob(resolve));
+        file = new File([blob], 'recipe.png', { type: 'image/png' });
+    }
+    else {
+        // We are missing a picture. Let's show the crop dialog if they haven't cropped yet
+        let cropperPreview = document.getElementById("previewContainer");
+        if (cropperPreview) {
+            cropperPreview.scrollIntoView({behavior: 'smooth'});
+        }
+        else {
+            // Or clear the picture field and try again
+            let pictureIn = document.getElementById("recipePicture")
+            pictureIn.value = "";
+            pictureIn.focus()
+            return document.getElementById("recipeForm").reportValidity()
+        }   
+    }
+
+    let addedIngredients = document.getElementById("ingredients-container").children;
+    let ingredients = []
+    for (let i = 0; i < addedIngredients.length; i++) {
+        ingredients.push(addedIngredients[i].children[0].value)
+    }
+
+    let addedInstructions = document.getElementById("instructions-container").children;
+    let instructions = []
+    for (let i = 0; i < addedInstructions.length; i++) {
+        instructions.push(addedInstructions[i].children[1].value)
+    }
+
+    // Construct and send a form request Django can hopefully understand
+    let formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("ingredients", ingredients.join("\n"));
+    formData.append("instructions", instructions.join("\n"));
+    formData.append("tags", tags.join(","));
+    formData.append("picture", file);
+    formData.append("csrfmiddlewaretoken", document.getElementById("recipeForm").children[0].value)
+
+    const response = await fetch(".", {
+        method: "POST",
+        body: formData
+    })
+
+    console.log(await response.text());
 }
 
 function cropPhoto() {
@@ -82,19 +139,19 @@ async function finaliseCrop(e) {
     document.getElementById("cropper-help").style.display = "none";
 }
 
-function enterKeyAddIngredient (event) {
+function enterKeyAddIngredient(event) {
     if (event.key === "Enter") {
-      event.preventDefault();
-      document.getElementById("add-ingredient-button").click();
+        event.preventDefault();
+        document.getElementById("add-ingredient-button").click();
     }
-} 
+}
 
-function ctrlEnterAddStep (event) {
+function ctrlEnterAddStep(event) {
     if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      document.getElementById("add-step-button").click();
+        event.preventDefault();
+        document.getElementById("add-step-button").click();
     }
-} 
+}
 
 function addIngredient(e) {
     e.preventDefault();
@@ -105,11 +162,11 @@ function addIngredient(e) {
     <button id="deleteingredient%counter%" onclick="deleteIngredient(event)">✕</button>
     `
     addListItem(text, "ingredient", "single-ingredient", component, recipeCount, "ingredients-container")
-    .then(() => {
-        inputField.value = "";
-        recipeCount++;
-    })
-    .catch(() => {});
+        .then(() => {
+            inputField.value = "";
+            recipeCount++;
+        })
+        .catch(() => { });
 }
 
 function addStep(e) {
@@ -122,11 +179,11 @@ function addStep(e) {
     <button id="deletestep%counter%" onclick="deleteStep(event)">✕</button>
     `
     addListItem(text, "step", "single-step", component, stepsCount, "instructions-container")
-    .then(() => {
-        textarea.value = "";
-        stepsCount++;
-    })
-    .catch(() => {});
+        .then(() => {
+            textarea.value = "";
+            stepsCount++;
+        })
+        .catch(() => { });
 }
 
 function addListItem(text, id, classname, component, counter, container) {
