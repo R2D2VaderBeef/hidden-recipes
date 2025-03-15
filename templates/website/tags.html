@@ -22,6 +22,7 @@ active
         <input type="text" name="q" value="{{ query }}" placeholder="Search by tag..." />
         <button type="submit">Search</button>
     </form>
+    
 
 <!-- Recipe List -->
 {% if recipes %}
@@ -29,11 +30,14 @@ active
 
     <ul>
         {% for recipe in recipes %}
-            <li>{{ recipe.title }} - Tags: 
-                {% for tag in recipe.tags.all %}
-                    {{ tag.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </li>
+
+        <li>        
+            <a href="{% url 'website:view_recipe' recipe.id %}">{{ recipe.title }}</a> - Tags: 
+            {% for tag in recipe.tags.all %}
+                {{ tag.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </li>
+        
         {% endfor %}
     </ul>
 

@@ -25,10 +25,14 @@ class Recipe(models.Model):
     ingredients = models.TextField()
     instructions = models.TextField()
     tags = models.ManyToManyField(Tag, related_name="recipes") 
-    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recipes")
+    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes') 
+    created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)
+    likes = models.ManyToManyField(User, related_name='liked_recipes', blank=True)
     date = models.DateTimeField()
     picture = models.ImageField(upload_to='recipe_images', default="defaults/default_16x10.png")
 
+    
     def __str__(self):
         return self.title
     
