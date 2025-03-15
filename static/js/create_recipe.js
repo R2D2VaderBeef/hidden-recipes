@@ -42,19 +42,21 @@ async function submitRecipe(e) {
     let file = null;
     if (document.getElementById("cropper-output").children.length > 0) {
         let blob = await new Promise(resolve => document.getElementById("cropper-output").children[0].toBlob(resolve));
-        file = new File([blob], 'recipe.png', { type: 'image/png' });
+        file = new File([blob], `${title.replace(/[^a-zA-Z0-9]/g, '')}.png`, { type: 'image/png' });
     }
     else {
         // We are missing a picture. Let's show the crop dialog if they haven't cropped yet
         let cropperPreview = document.getElementById("previewContainer");
         if (cropperPreview) {
             cropperPreview.scrollIntoView({behavior: 'smooth'});
+            cropperPreview.children[2].focus({focusVisible: true});
+            cropperPreview.children[3].style.display = "block";
         }
         else {
             // Or clear the picture field and try again
             let pictureIn = document.getElementById("recipePicture")
             pictureIn.value = "";
-            pictureIn.focus()
+            pictureIn.focus({focusVisible: true})
             return document.getElementById("recipeForm").reportValidity()
         }   
     }
@@ -64,11 +66,23 @@ async function submitRecipe(e) {
     for (let i = 0; i < addedIngredients.length; i++) {
         ingredients.push(addedIngredients[i].children[0].value)
     }
+    if (ingredients.length < 1) {
+        // Show the user they need to add at least one ingredient
+        addMissingIngredient();
+        document.getElementById("ingredients-container").scrollIntoView({behavior: 'smooth'});
+        return document.getElementById("recipeForm").reportValidity()
+    }
 
     let addedInstructions = document.getElementById("instructions-container").children;
     let instructions = []
     for (let i = 0; i < addedInstructions.length; i++) {
         instructions.push(addedInstructions[i].children[1].value)
+    }
+    if (instructions.length < 1) {
+        // Show the user they need to add at least one step
+        addMissingStep();
+        document.getElementById("instructions-container").scrollIntoView({behavior: 'smooth'});
+        return document.getElementById("recipeForm").reportValidity()
     }
 
     // Construct and send a form request Django can hopefully understand
@@ -119,9 +133,14 @@ function cropPhoto() {
     `
     previewContainer.appendChild(preview);
 
-    let button = document.createElement("button")
+    let button = document.createElement("button");
     previewContainer.appendChild(button);
-    button.outerHTML = `<button onclick="finaliseCrop(event)">Crop</button>`
+    button.outerHTML = `<button onclick="finaliseCrop(event)">Save Crop</button>`
+
+    let error = document.createElement("p");
+    error.className = "error";
+    error.textContent = "Please save your cover image crop to post."
+    previewContainer.appendChild(error);
 
     document.getElementById('cropper-container').appendChild(previewContainer);
 
@@ -179,6 +198,33 @@ function addStep(e) {
     <button id="deletestep%counter%" onclick="deleteStep(event)">✕</button>
     `
     addListItem(text, "step", "single-step", component, stepsCount, "instructions-container")
+        .then(() => {
+            textarea.value = "";
+            stepsCount++;
+        })
+        .catch(() => { });
+}
+
+function addMissingIngredient() {
+    let component = `
+    <input type="text" placeholder="Please add at least 1 ingredient" required>
+    <button id="deleteingredient%counter%" onclick="deleteIngredient(event)">✕</button>
+    `
+    addListItem(" ", "ingredient", "single-ingredient", component, recipeCount, "ingredients-container")
+        .then(() => {
+            inputField.value = "";
+            recipeCount++;
+        })
+        .catch(() => { });
+}
+
+function addMissingStep(e) {
+    let component = `
+    <span class="handle">⋮⋮</span>
+    <textarea placeholder="Please add at least 1 step" required></textarea>
+    <button id="deletestep%counter%" onclick="deleteStep(event)">✕</button>
+    `
+    addListItem(" ", "step", "single-step", component, stepsCount, "instructions-container")
         .then(() => {
             textarea.value = "";
             stepsCount++;

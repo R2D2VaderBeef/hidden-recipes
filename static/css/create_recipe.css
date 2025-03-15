@@ -137,3 +137,8 @@ select {
     color: #757575;
     font-weight: 400;
 }
+
+.error {
+    color: var(--theme_red);
+    display: none;
+}

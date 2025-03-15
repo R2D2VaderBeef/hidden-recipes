@@ -129,7 +129,10 @@ def create_recipe(request):
         
         tags = request.POST["tags"].split(",")
         for tag in tags:
-            recipe.tags.add(Tag.objects.get(pk=int(tag)))
+            if tag == "":
+                continue
+            else:
+                recipe.tags.add(Tag.objects.get(pk=int(tag)))
 
         return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
 

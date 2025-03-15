@@ -28,7 +28,7 @@ input[type=submit], form button {
     transition-duration: 0s;
 }
 
-input[type=submit]:hover, input[type=submit]:focus, form button:hover {
+input[type=submit]:hover, input[type=submit]:focus, form button:hover, form button:focus {
     background-color: var(--theme_green);   
     border-color: var(--theme_green);
 }
