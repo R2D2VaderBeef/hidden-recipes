@@ -20,13 +20,13 @@ active
     <article class="recipe-card">
         <div class="recipe-text">
             <div class="recipe-header">
-                <img class="rcp-avatar" src="{{ recipe.poster.profile_picture.url }}" alt="Profile Picture">
+                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
                 <span class="rcp-author">{{ recipe.poster.username }}</span>
-                <span class="rcp-time">{{ recipe.created_at|timesince }} ago</span>
+                <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
             </div>
             <h3 class="rcp-title">{{ recipe.title }}</h3>
             <p class="rcp-desc">
-                <span>{{ recipe.description|truncatewords:30 }}</span>
+                <span>{{ recipe.description }}</span>
             </p>
             <a href="{% url 'website:view_recipe' recipe.id %}">Read full recipe</a>
             <div class="rcp-tags">
@@ -40,11 +40,7 @@ active
             </div>
         </div>
         <div class="recipe-image">
-            {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
-            {% else %}
-                <img src="{% static 'img/default_recipe.jpg' %}" alt="No image available">
-            {% endif %}
+            <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
         </div>
     </article>
     {% empty %}

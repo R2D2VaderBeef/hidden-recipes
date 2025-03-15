@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 {% load static %}
-{% load website_tags %}
 
 <html>
     <head lang="en">
@@ -34,7 +33,7 @@
                     <li><a href="{% url 'website:profile' %}" class="{% block profile_active %}{% endblock %} buttonLink">Profile</a></li>
                     <li><a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %} buttonLink">New Recipe</a></li>
                     <li><a href="{% url 'website:logout' %}" class="buttonLink">Logout</a></li>
-                    <li id="avatar-icon"><img src="{{ user|find_picture }}" alt="{{ user }}'s profile picture"></li>
+                    <li id="avatar-icon"><img src="{{ user.profile.picture.url }}" alt="{{ user }}'s profile picture"></li>
                 {% else %}
                     <li><a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %} buttonLink">Register</a></li>
                     <li><a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %} buttonLink">Log In</a></li>

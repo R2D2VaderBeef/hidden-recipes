@@ -75,7 +75,7 @@ def user_logout(request):
 @login_required
 def profile(request):
     # Get the user's profile
-    user_profile = request.user.userprofile
+    user_profile = request.user.profile
 
     user_recipes = Recipe.objects.filter(poster_id=request.user)
 
@@ -176,7 +176,6 @@ def like_recipe(request, recipe_id):
     user = request.user
 
     if user in recipe.likes.all():
-
         recipe.likes.remove(user)
         liked = False
     else:

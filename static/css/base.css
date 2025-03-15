@@ -148,6 +148,6 @@ main {
     border-radius: 0.5em;
 }
 
-.buttonLink:hover {
+.buttonLink:hover:not(:disabled) {
     border-color: var(--theme_red);
 }
