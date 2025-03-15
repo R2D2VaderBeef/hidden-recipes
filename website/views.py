@@ -1,23 +1,20 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-
-from website.forms import UserForm, UserProfileForm
-
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-
-
-from django.shortcuts import render
-from .models import Tag, Recipe, UserProfile
+from django.http import HttpResponse
 from django.core.paginator import Paginator
+from django.core import serializers
+from django.utils import timezone
+
+from website.forms import UserForm, UserProfileForm
+from .models import Tag, Recipe, UserProfile
 from .forms import RecipeForm
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-
 
 def home(request):
     recipes = Recipe.objects.all().order_by('-id')  # Get all recipes, newest first
@@ -78,7 +75,7 @@ def user_logout(request):
 @login_required
 def profile(request):
     # Get the user's profile
-    user_profile = request.user.userprofile
+    user_profile = request.user.profile
 
     user_recipes = Recipe.objects.filter(poster_id=request.user)
 
@@ -128,17 +125,23 @@ def tags_view(request):
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.poster = request.user  # Set the author of the recipe
-            recipe.save()  
-            form.save_m2m() 
-            return redirect('website:home') 
-    else:
-        form = RecipeForm()
+        newTitle = request.POST["title"][0:128]
+        newDescription = request.POST["description"][0:512]
+        recipe = Recipe(title=newTitle, description=newDescription, ingredients=request.POST["ingredients"], instructions=request.POST["instructions"], picture=request.FILES["picture"])
+        recipe.poster = request.user  # Set the author of the recipe
+        recipe.date = timezone.now()
+        recipe.save()
+        
+        tags = request.POST["tags"].split(",")
+        for tag in tags:
+            if tag == "":
+                continue
+            else:
+                recipe.tags.add(Tag.objects.get(pk=int(tag)))
 
-    return render(request, 'website/create_recipe.html', {'form': form})
+        return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
+
+    return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
 
 
 @login_required
@@ -173,7 +176,6 @@ def like_recipe(request, recipe_id):
     user = request.user
 
     if user in recipe.likes.all():
-
         recipe.likes.remove(user)
         liked = False
     else:
