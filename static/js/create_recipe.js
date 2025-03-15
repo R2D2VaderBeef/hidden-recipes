@@ -100,7 +100,8 @@ async function submitRecipe(e) {
         body: formData
     })
 
-    console.log(await response.text());
+    let newId = await response.text();
+    window.location.href = data.redirect.replace("0", newId);
 }
 
 function cropPhoto() {
