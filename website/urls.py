@@ -10,8 +10,11 @@ path('login/', views.user_login, name='login'),
 path('logout/', views.user_logout, name='logout'),
 path('tags/', views.tags_view, name='tags'),
 path('profile/', views.profile, name='profile'),
-path('create-recipe/', views.create_recipe, name='create_recipe'),
-path('edit_recipe/<int:recipe_id>/', views.edit_recipe, name='edit_recipe'),
+path('create-post/', views.create_recipe, name='create_recipe'),
+path('edit-post/<int:recipe_id>/', views.edit_recipe, name='edit_recipe'),
 path('delete-account/', views.delete_account, name='delete_account'),
+path('view-post/<int:recipe_id>/', views.view_recipe, name='view_recipe'),
+path('like/<int:recipe_id>/', views.like_recipe, name='like_recipe'),
+
 
 ]

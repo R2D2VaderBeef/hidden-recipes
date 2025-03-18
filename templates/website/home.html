@@ -16,64 +16,36 @@ active
 
 {% block body_block %}
 <section class="recipes">
+    {% for recipe in recipes %}
     <article class="recipe-card">
         <div class="recipe-text">
             <div class="recipe-header">
-                <img class="rcp-avatar" src="https://placehold.jp/25x25.png" alt="">
-                <span class="rcp-author">foodlover99</span>
-                <span class="rcp-time">14 hours ago</span>
+                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
+                <span class="rcp-author">{{ recipe.poster.username }}</span>
+                <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
             </div>
-            <h3 class="rcp-title">Home-style chicken curry</h3>
+            <h3 class="rcp-title">{{ recipe.title }}</h3>
             <p class="rcp-desc">
-                <span>This authentic recipe traces its roots back to my father's upbringing in a
-                    Bihari household in Northern India. A fairly mild dish (with options to increase the spice),
-                    this curry pairs well with plain rice or even naan and some vegetables.</span>
+                <span>{{ recipe.description }}</span>
             </p>
-            <a href="#">Read full recipe</a>
+            <a href="{% url 'website:view_recipe' recipe.id %}">Read full recipe</a>
             <div class="rcp-tags">
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=indian">Indian</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chicken">Chicken</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=tomato">Tomato</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=onion">Onion</a>
+                {% for tag in recipe.tags.all %}
+                    <a class="buttonLink" href="{% url 'website:tags' %}?tags={{ tag.name }}">{{ tag.name }}</a> 
+                {% endfor %}
             </div>
             <div class="recipe-footer">
-                <span class="likes"><img src="static/img/like.svg" /> 12</span>
-                <span class="comments"><img src="static/img/comment.svg" /> 0</span>
+                <span class="likes"><img src="{% static 'img/like.svg' %}" /> {{ recipe.likes.count }}</span>
+                <span class="comments"><img src="{% static 'img/comment.svg' %}" /> {{ recipe.comments.count }}</span>
             </div>
         </div>
         <div class="recipe-image">
-            <img src="https://placehold.jp/240x135.png" alt="Home-style chicken curry">
+            <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
         </div>
     </article>
-
-    <article class="recipe-card">
-        <div class="recipe-text">
-            <div class="recipe-header">
-                <img class="rcp-avatar" src="https://placehold.jp/25x25.png" alt="">
-                <span class="rcp-author">foodlover99</span>
-                <span class="rcp-time">2 weeks ago</span>
-            </div>
-            <h3 class="rcp-title">Cashew nut chicken</h3>
-            <p class="rcp-desc">
-                <span>This Chinese-inspired dish requires a few ingredients you may not already have -
-                    but its delicious flavour makes acquiring them well worth it! I recommend serving it with
-                    noodles.</span>
-            </p>
-            <a href="#">Read full recipe</a>
-            <div class="rcp-tags">
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chinese">Chinese</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chicken">Chicken</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=capsicum">Capsicum</a>
-            </div>
-            <div class="recipe-footer">
-                <span class="likes"><img src="static/img/like.svg" /> 6</span>
-                <span class="comments"><img src="static/img/comment.svg" /> 3</span>
-            </div>
-        </div>
-        <div class="recipe-image">
-            <img src="https://placehold.jp/240x135.png" alt="Cashew nut chicken">
-        </div>
-    </article>
+    {% empty %}
+        <p>No recipes available yet. Be the first to add one!</p>
+    {% endfor %}
 </section>
 
 <div class="pagination">
@@ -81,6 +53,4 @@ active
     <button class="btn buttonLink">Next Page</button>
 </div>
 
-
 {% endblock %}
-
