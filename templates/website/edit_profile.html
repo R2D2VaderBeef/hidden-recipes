@@ -1,0 +1,41 @@
+{% extends 'website/base.html' %}
+
+{% block title_block %}
+    Edit Profile
+{% endblock %}
+
+{% block body_block %}
+<h1>Edit Profile</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>Your Current Username: {{ user.username }}</p>
+
+    <label for="new_username"><h4>Change Username:</h4></label>
+    <input type="text" name="new_username" value="{{ user.username }}" required>
+    <button type="submit" name="action" value="change_username">Save Username</button>
+
+    <hr>
+
+
+    <h4>Change Password</h4>
+    {{ password_form.as_p }}
+    <button type="submit" name="action" value="change_password">Change Password</button>
+
+    <hr>
+
+
+    <h4>Profile Details</h4>
+    {{ profile_form.as_p }}
+    <button type="submit" name="action" value="save_profile">Save Profile</button>
+
+    <hr>
+
+
+</form>
+
+
+
+<a href="{% url 'website:delete_account' %}">Delete Account</a>
+{% endblock %}

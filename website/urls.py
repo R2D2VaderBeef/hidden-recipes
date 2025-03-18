@@ -13,5 +13,6 @@ path('profile/', views.profile, name='profile'),
 path('create-recipe/', views.create_recipe, name='create_recipe'),
 path('edit_recipe/<int:recipe_id>/', views.edit_recipe, name='edit_recipe'),
 path('delete-account/', views.delete_account, name='delete_account'),
+path('edit_profile/', views.edit_profile, name='edit_profile'),
 
 ]
