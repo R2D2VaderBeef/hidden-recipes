@@ -164,14 +164,12 @@ def view_recipe(request, recipe_id):
     try:
         recipe = Recipe.objects.get(id=recipe_id)
         comments = recipe.comments.all()
+        comment_count = comments.count()
         form = CommentForm()
-
-        #adding starts here
+        
         if request.method == "POST":
-             #text = request.POST.get("text")
              form = CommentForm(request.POST)
              if form.is_valid():
-                #view_recipe = self.get_object()
                 comment = form.save(commit=False)
                 comment.poster = request.user
                 comment.recipe = recipe
@@ -179,15 +177,21 @@ def view_recipe(request, recipe_id):
                 return redirect('website:view_recipe', recipe_id = recipe.id)
              else:
                 form = CommentForm()
-        #added ends here
 
                 
     except Recipe.DoesNotExist:
         return HttpResponse("Recipe not found", status=404)
     
-    #added comments and form to context
-    context = {'recipe': recipe,'comments':comments, 'form':form}
+    context = {'recipe': recipe,'comments':comments, 'form':form, 'comment_count':comment_count}
     return render(request, 'website/recipe_view.html', context)
+
+def delete_comment(request,comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.poster == request.user:
+        comment.delete()
+        return redirect('website:view_recipe',recipe_id=comment.recipe.id)
+    else:
+        return HttpResponse("Cannot delete comment", status=404)
 
 
 @login_required

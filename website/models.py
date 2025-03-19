@@ -34,14 +34,11 @@ class Recipe(models.Model):
         return self.title
 
 class Comment(models.Model):
-    #poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     poster = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     date = models.DateTimeField(auto_now_add = True)
-    #created = models.DateTimeField(auto_now_add=True) 
-    #active = models.BooleanField(default=True) 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="comments")
-    picture = models.ImageField(upload_to='comment_images', default="defaults/default_16x10.png")
+    #picture = models.ImageField(upload_to='comment_images', default="defaults/default_16x10.png")
 
 
     def __str__(self):

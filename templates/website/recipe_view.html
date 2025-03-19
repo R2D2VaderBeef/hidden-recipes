@@ -54,16 +54,20 @@ document.getElementById("like-button").addEventListener("click", function() {
 {% endif %}
 
 
-<h3>Comments</h3>
+<h3>Comments ({{ comment_count}})</h3>
 <div id = "comments-section">
     {% for comment in comments %}
         <div>
-            <strong>
-                {{ comment.poster }}
-                {{ comment.date }}
-            </strong> 
-            <br/>
+            <p><strong>{{ comment.poster }}</strong> says:</p>
             <p>{{ comment.text }}</p>
+            <p><small>{{ comment.date }}</small></p>
+
+            {% if comment.poster == request.user %}
+                <form action="{% url 'website:delete_comment' comment.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete Comment</button>
+                </form>
+            {% endif %}
         </div>
     {% empty %}
         <p>No comments yet.</p>
@@ -79,37 +83,4 @@ document.getElementById("like-button").addEventListener("click", function() {
     {% else %}
         <p><a href="{% url 'website:login' %}">Log in</a> to post a comment.</p>
     {% endif %}
-
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function(){
-        $("#comment-form").submit(function(e){
-            e.preventDefault();  // Prevent default form submission
-            let commentText = $("#comment-text").val();
-            if (commentText.trim() === "") return;
-            $.ajax({
-                type: "POST",
-                url: window.location.href,
-                data: {
-                    text: commentText,
-                    csrfmiddlewaretoken: "{{ csrf_token }}"
-                },
-                success: function(response){
-                    if (response.success) {
-                        // Append new comment without refreshing the page
-                        $("#comments-section").append(`
-                            <div class="comment">
-                                <strong>${response.username}</strong> (${response.created_at}):
-                                <p>${response.text}</p>
-                            </div>
-                        `);
-                        $("#comment-text").val("");  // Clear input field after submission
-                }
-            }
-            });
-        });
-    });
-    </script>  -->
-
-
 {% endblock %}
