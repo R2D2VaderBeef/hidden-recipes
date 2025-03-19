@@ -9,8 +9,8 @@ from django.core import serializers
 from django.utils import timezone
 
 from website.forms import UserForm, UserProfileForm
-from .models import Tag, Recipe, UserProfile
-from .forms import RecipeForm
+from .models import Tag, Recipe, UserProfile, Comment
+from .forms import RecipeForm, CommentForm
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -163,10 +163,30 @@ def edit_recipe(request, recipe_id):
 def view_recipe(request, recipe_id):
     try:
         recipe = Recipe.objects.get(id=recipe_id)
+        comments = recipe.comments.all()
+        form = CommentForm()
+
+        #adding starts here
+        if request.method == "POST":
+             #text = request.POST.get("text")
+             form = CommentForm(request.POST)
+             if form.is_valid():
+                #view_recipe = self.get_object()
+                comment = form.save(commit=False)
+                comment.poster = request.user
+                comment.recipe = recipe
+                comment.save()
+                return redirect('website:view_recipe', recipe_id = recipe.id)
+             else:
+                form = CommentForm()
+        #added ends here
+
+                
     except Recipe.DoesNotExist:
         return HttpResponse("Recipe not found", status=404)
-
-    context = {'recipe': recipe}
+    
+    #added comments and form to context
+    context = {'recipe': recipe,'comments':comments, 'form':form}
     return render(request, 'website/recipe_view.html', context)
 
 

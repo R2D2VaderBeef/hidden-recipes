@@ -16,5 +16,5 @@ path('delete-account/', views.delete_account, name='delete_account'),
 path('view-post/<int:recipe_id>/', views.view_recipe, name='view_recipe'),
 path('like/<int:recipe_id>/', views.like_recipe, name='like_recipe'),
 
-
 ]
+
