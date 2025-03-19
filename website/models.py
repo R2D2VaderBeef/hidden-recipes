@@ -34,7 +34,7 @@ class Recipe(models.Model):
         return self.title
 
 class Comment(models.Model):
-    date = models.DateTimeField()
+    date = models.DateTimeField(auto_now_add = True)
     text = models.TextField()
     poster = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="comments")

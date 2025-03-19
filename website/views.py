@@ -9,8 +9,8 @@ from django.core import serializers
 from django.utils import timezone
 
 from website.forms import UserForm, UserProfileForm
-from .models import Tag, Recipe, UserProfile
-from .forms import RecipeForm
+from .models import Tag, Recipe, UserProfile, Comment
+from .forms import RecipeForm, CommentForm
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404

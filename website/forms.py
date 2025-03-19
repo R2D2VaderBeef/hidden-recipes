@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.models import User
 from website.models import UserProfile
-from website.models import Recipe, Tag
+from website.models import Recipe, Tag, Comment
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
