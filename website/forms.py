@@ -31,4 +31,14 @@ class RecipeForm(forms.ModelForm):
 
     class Meta:
         model = Recipe
+<<<<<<< HEAD
         fields = ['title', 'description', 'picture', 'ingredients', 'instructions', 'tags']
+=======
+        fields = ['title', 'description', 'picture', 'ingredients', 'instructions', 'tags']
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ['text']
+>>>>>>> 8fd4916 (allowed comment deletion)
