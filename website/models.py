@@ -38,7 +38,6 @@ class Comment(models.Model):
     text = models.TextField()
     date = models.DateTimeField(auto_now_add = True)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="comments")
-    #picture = models.ImageField(upload_to='comment_images', default="defaults/default_16x10.png")
 
 
     def __str__(self):
