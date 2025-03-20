@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from website.models import UserProfile
 from website.models import Recipe, Tag
 
+from django.utils import timezone
+
+
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     
@@ -32,3 +35,9 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = ['title', 'description', 'ingredients', 'instructions', 'tags']
+    
+    def save(self, commit=True):
+
+        if not self.instance.pk: 
+            self.instance.date = timezone.now()
+        return super().save(commit=commit)
