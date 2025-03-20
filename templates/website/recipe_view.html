@@ -52,4 +52,35 @@ document.getElementById("like-button").addEventListener("click", function() {
     {% if user == recipe.poster %}
     <a href="{% url 'website:edit_recipe' recipe.id %}">Edit Recipe</a>
 {% endif %}
+
+
+<h3>Comments ({{ comment_count}})</h3>
+<div id = "comments-section">
+    {% for comment in comments %}
+        <div>
+            <p><strong>{{ comment.poster }}</strong> says:</p>
+            <p>{{ comment.text }}</p>
+            <p><small>{{ comment.date }}</small></p>
+
+            {% if comment.poster == request.user %}
+                <form action="{% url 'website:delete_comment' comment.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete Comment</button>
+                </form>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+</div>
+{% if user.is_authenticated %}
+        <h4>Add a Comment</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p}}
+            <button type="submit">Post Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'website:login' %}">Log in</a> to post a comment.</p>
+    {% endif %}
 {% endblock %}

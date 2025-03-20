@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.models import User
 from website.models import UserProfile
-from website.models import Recipe, Tag
+from website.models import Recipe, Tag, Comment
 
 from django.utils import timezone
 
@@ -34,10 +34,17 @@ class RecipeForm(forms.ModelForm):
 
     class Meta:
         model = Recipe
-        fields = ['title', 'description', 'ingredients', 'instructions', 'tags']
+        fields = ['title', 'description', 'picture', 'ingredients', 'instructions', 'tags']
     
     def save(self, commit=True):
 
         if not self.instance.pk: 
             self.instance.date = timezone.now()
         return super().save(commit=commit)
+       
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ['text']

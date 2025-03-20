@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
 
     picture = models.ImageField(upload_to='profile_images', default="defaults/default_profile.png")
     bio = models.TextField(blank=True, null=True)
@@ -25,24 +25,19 @@ class Recipe(models.Model):
     ingredients = models.TextField()
     instructions = models.TextField()
     tags = models.ManyToManyField(Tag, related_name="recipes") 
-    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes') 
-    created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)
-    likes = models.ManyToManyField(User, related_name='liked_recipes', blank=True)
+    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipes')
     date = models.DateTimeField()
-
+    picture = models.ImageField(upload_to='recipe_images', default="defaults/default_16x10.png")
+    likes = models.ManyToManyField(User, related_name='liked_recipes', blank=True)
     
     def __str__(self):
         return self.title
-    
-
-class Like(models.Model):
-    date = models.DateTimeField()
-    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="likes")
 
 class Comment(models.Model):
-    date = models.DateTimeField()
-    text = models.CharField(max_length=255)
-    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    date = models.DateTimeField(auto_now_add = True)
+    text = models.TextField()
+    poster = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return self.text
