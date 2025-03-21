@@ -33,8 +33,13 @@
                     <li><a href="{% url 'website:profile' %}" class="{% block profile_active %}{% endblock %} buttonLink">Profile</a></li>
                     <li><a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %} buttonLink">New Recipe</a></li>
                     <li><a href="{% url 'website:logout' %}" class="buttonLink">Logout</a></li>
-                    <li id="avatar-icon"><img src="{{ user.profile.picture.url }}" alt="{{ user }}'s profile picture"></li>
-                {% else %}
+                    <li id="avatar-icon">
+                        {% if user.profile.picture %}
+                            <img src="{{ user.profile.picture.url }}" alt="{{ user }}'s profile picture"></li>
+                        {% else %}
+                            <img src="{% static 'img/user_yellow.png' %}" alt="Default profile picture">
+                        {% endif %}
+                    {% else %}
                     <li><a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %} buttonLink">Register</a></li>
                     <li><a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %} buttonLink">Log In</a></li>
                     <li id="avatar-icon"><img src="{% static 'img/user_yellow.png' %}" alt=""></li>
