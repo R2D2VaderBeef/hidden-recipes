@@ -4,9 +4,9 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.core.paginator import Paginator
 from django.core import serializers
 from django.utils import timezone
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from website.forms import UserForm, UserProfileForm
 from .models import Tag, Recipe, UserProfile, Comment
@@ -17,7 +17,16 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 def home(request):
-    recipes = Recipe.objects.all().order_by('-id')  # Get all recipes, newest first
+    recipes = Recipe.objects.all().order_by('-date') 
+    paginator = Paginator(recipes, 6)  #6recipes at a time
+    page_number = request.GET.get('page')
+    try:
+        recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        recipes = paginator.page(1)
+    except EmptyPage:
+        recipes = paginator.page(paginator.num_pages)
+
     return render(request, 'website/home.html', {'recipes': recipes})
 
 def tags(request):
@@ -72,26 +81,40 @@ def user_logout(request):
     logout(request)
     return redirect(reverse('website:home'))
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import UserProfileForm
+from .models import Recipe
+
 @login_required
 def profile(request):
     # Get the user's profile
     user_profile = request.user.profile
 
-    user_recipes = Recipe.objects.filter(poster_id=request.user)
+    # Get the user's recipes, sorted by date (newest first)
+    user_recipes = Recipe.objects.filter(poster=request.user).order_by('-date')
+
+    return render(request, 'website/profile.html', {
+        'user_profile': user_profile,
+        'user_recipes': user_recipes,
+    })
+
+@login_required
+def edit_profile(request):
+    user_profile = request.user.profile
 
     if request.method == 'POST':
         profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
-
         if profile_form.is_valid():
             profile_form.save()
             return redirect('website:profile')
     else:
         profile_form = UserProfileForm(instance=user_profile)
 
-    return render(request, 'website/profile.html', {
+    return render(request, 'website/edit_profile.html', {
         'profile_form': profile_form,
-        'user_recipes': user_recipes  
     })
+
 
 @login_required
 def delete_account(request):
@@ -121,29 +144,56 @@ def tags_view(request):
     return render(request, 'website/tags.html', context)
 
 
+from django.http import JsonResponse
 
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
-        newTitle = request.POST["title"][0:128]
-        newDescription = request.POST["description"][0:512]
-        recipe = Recipe(title=newTitle, description=newDescription, ingredients=request.POST["ingredients"], instructions=request.POST["instructions"], picture=request.FILES["picture"])
-        recipe.poster = request.user  # Set the author of the recipe
-        recipe.date = timezone.now()
-        recipe.save()
-        
-        tags = request.POST["tags"].split(",")
-        for tag in tags:
-            if tag == "":
-                continue
+        try:
+            newTitle = request.POST["title"][0:128]
+            newDescription = request.POST["description"][0:512]
+            
+            recipe = Recipe(
+                title=newTitle,
+                description=newDescription,
+                ingredients=request.POST["ingredients"],
+                instructions=request.POST["instructions"],
+                picture=request.FILES["picture"]
+            )
+            recipe.poster = request.user
+            recipe.date = timezone.now()
+            recipe.save()
+            
+            tags = request.POST["tags"].split(",")
+            for tag in tags:
+                if tag == "":
+                    continue
+                else:
+                    recipe.tags.add(Tag.objects.get(pk=int(tag)))
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                # Return a JSON response for AJAX requests
+                return JsonResponse({
+                    'success': True,
+                    'redirect_url': reverse('website:view_recipe', args=[recipe.id])  # Redirect to the new recipe's view page
+                })
             else:
-                recipe.tags.add(Tag.objects.get(pk=int(tag)))
-
-        return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
+                # Redirect for regular form submissions
+                return redirect('website:view_recipe', recipe_id=recipe.id)
+       
+        except Exception as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'error': str(e)
+                })
+            else:
+                return render(request, 'website/create_recipe.html', {
+                    'tags': serializers.serialize("json", Tag.objects.all()),
+                    'error': str(e)
+                })
 
     return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
-
-
 @login_required
 def edit_recipe(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id, poster_id=request.user)

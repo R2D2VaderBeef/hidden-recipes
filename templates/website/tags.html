@@ -5,62 +5,91 @@
     Tags
 {% endblock %}
 
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
+{% endblock %}
+
 {% block tags_active %}
 active
 {% endblock %}
 
 {% block body_block %}
+
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
     <h1>Hidden recipes</h1>
     <div>
         here is the tags page.<br />
         <strong>{{ boldmessage }}</strong><br />
     </div>
-    <p>I still have to create a view recipe and be able to click on the recipe to view the recipe here.</p>
 
 
+    <!-- Search Form -->
     <form method="GET" action="{% url 'website:tags' %}">
         <input type="text" name="q" value="{{ query }}" placeholder="Search by tag..." />
         <button type="submit">Search</button>
     </form>
-    
 
-<!-- Recipe List -->
-{% if recipes %}
-    <h3>Showing {{ recipes.paginator.count }} recipes</h3>
+    <!-- Recipe List -->
+    <section class="recipes">
+        {% if recipes %}
+            <h3>Showing {{ recipes.paginator.count }} recipes</h3>
 
-    <ul>
-        {% for recipe in recipes %}
-
-        <li>        
-            <a href="{% url 'website:view_recipe' recipe.id %}">{{ recipe.title }}</a> - Tags: 
-            {% for tag in recipe.tags.all %}
-                {{ tag.name }}{% if not forloop.last %}, {% endif %}
+            {% for recipe in recipes %}
+                <article class="recipe-card">
+                    <div class="recipe-text">
+                        <div class="recipe-header">
+                            <!-- Check if poster.profile.picture exists -->
+                            {% if recipe.poster.profile.picture %}
+                                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
+                            {% else %}
+                                <img class="rcp-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+                            {% endif %}
+                            <span class="rcp-author">{{ recipe.poster.username }}</span>
+                            <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
+                        </div>
+                        <h3 class="rcp-title">{{ recipe.title }}</h3>
+                        <p class="rcp-desc">
+                            <span>{{ recipe.description }}</span>
+                        </p>
+                        <a href="{% url 'website:view_recipe' recipe.id %}">Read full recipe</a>
+                        <div class="rcp-tags">
+                            {% for tag in recipe.tags.all %}
+                                <a class="buttonLink" href="{% url 'website:tags' %}?tags={{ tag.name }}">{{ tag.name }}</a> 
+                            {% endfor %}
+                        </div>
+                        <div class="recipe-footer">
+                            <span class="likes"><img src="{% static 'img/like.svg' %}" /> {{ recipe.likes.count }}</span>
+                            <span class="comments"><img src="{% static 'img/comment.svg' %}" /> {{ recipe.comments.count }}</span>
+                        </div>
+                    </div>
+                    <div class="recipe-image">
+                        <!-- Check if recipe.picture exists -->
+                        {% if recipe.picture %}
+                            <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
+                        {% else %}
+                            <img src="{% static 'defaults/default_16x10.png' %}" alt="Default Recipe Image">
+                        {% endif %}
+                    </div>
+                </article>
             {% endfor %}
-        </li>
-        
-        {% endfor %}
-    </ul>
+        {% else %}
+            <p>No recipes found for this tag.</p>
+        {% endif %}
+    </section>
 
     <!-- Pagination Controls -->
-    <div>
+    <div class="pagination">
         {% if recipes.has_previous %}
-            <a href="?q={{ query }}&page=1">First</a>
-            <a href="?q={{ query }}&page={{ recipes.previous_page_number }}">Previous</a>
+            <a href="?q={{ query }}&page=1" class="btn buttonLink">First</a>
+            <a href="?q={{ query }}&page={{ recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
         {% endif %}
 
-        Page {{ recipes.number }} of {{ recipes.paginator.num_pages }}
+        <span>Page {{ recipes.number }} of {{ recipes.paginator.num_pages }}</span>
 
         {% if recipes.has_next %}
-            <a href="?q={{ query }}&page={{ recipes.next_page_number }}">Next</a>
-            <a href="?q={{ query }}&page={{ recipes.paginator.num_pages }}">Last</a>
+            <a href="?q={{ query }}&page={{ recipes.next_page_number }}" class="btn buttonLink">Next</a>
+            <a href="?q={{ query }}&page={{ recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
         {% endif %}
     </div>
-
-{% else %}
-    <p>No recipes found for this tag.</p>
-{% endif %}
-
-
 {% endblock %}
-

@@ -1,0 +1,26 @@
+{% extends 'website/base.html' %}
+{% load static %} 
+
+{% block title_block %}
+    Edit Profile
+{% endblock %}
+
+{% block profile_active %}
+    active
+{% endblock %}
+
+{% block body_block %}
+    <h1>Edit Profile</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ profile_form.as_p }}
+        <input type="submit" value="Save changes">
+    </form>
+
+    <a href="{% url 'website:profile' %}">Cancel</a>
+
+    <a href="{% url 'website:delete_account' %}">Delete Account</a>
+
+
+{% endblock %}
