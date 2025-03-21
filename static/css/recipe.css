@@ -82,7 +82,6 @@ article {
 .recipe-image {
     align-content: center;
     width: 320px;
-    display: contents !important;
 }
 
 .rcp-tags {
@@ -110,5 +109,10 @@ article {
 
     .recipe-image {
         margin-top: 1em;
+        max-width: 100%;
+    }
+
+    .recipe-image img {
+        max-width: 100%;
     }
 }
