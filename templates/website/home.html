@@ -20,7 +20,7 @@ active
     <article class="recipe-card">
         <div class="recipe-text">
             <div class="recipe-header">
-                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
+                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="{{ recipe.poster.username }}'s profile picture">
                 <span class="rcp-author">{{ recipe.poster.username }}</span>
                 <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
             </div>
@@ -40,7 +40,7 @@ active
             </div>
         </div>
         <div class="recipe-image">
-            <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
+            <img src="{{ recipe.picture.url }}" alt="Photo of {{ recipe.title }}">
         </div>
     </article>
     {% empty %}
