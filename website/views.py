@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.shortcuts import render
 from .models import Tag, Recipe
@@ -183,36 +183,30 @@ def edit_profile(request):
     if request.method == 'POST':  
         profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile) #set profile
         username = request.POST.get("new_username") #new username
-        password_form = PasswordChangeForm(user=request.user)
+        new_password = request.POST.get('new_password') #new password
+        old_password = request.POST.get('old_password')
         action = request.POST.get('action')  # Action checker to allow changing only one part
 
-
-        if action == 'change_username' and username and username != request.user.username: #check its a different username 
+        if action == 'change_username' and username != request.user.username: #check its a different username 
             if not User.objects.filter(username=username).exists():   #check if username is free
                 request.user.username = username
                 request.user.save()  
-            else:
-                profile_form.add_error('new_username', 'Username is not available')
-
+                return redirect('website:profile')
     
-        elif action == 'change_password' and password_form.is_valid():         # Password swapper
-            password_form = PasswordChangeForm(user=request.user, data=request.POST) #set password change form
-            if password_form.is_valid():
-                password_form.save()
-                update_session_auth_hash(request, password_form.user) 
-                
-                return redirect('website:edit_profile')  # Redirect after changing password
+        elif action == 'change_password':
+            if check_password(old_password, request.user.password):  #Check old password
+                request.user.set_password(new_password)  # Set new password
+                request.user.save()
+                return redirect(reverse('website:profile'))
 
         elif action == 'save_profile' and profile_form.is_valid():  #Profile Save
             profile_form.save()
-            messages.success(request, "Profile saved!")
-            return redirect('website:edit_profile')  
+            return redirect('website:profile')  
 
     else:
         profile_form = UserProfileForm(instance=user_profile)  #Return users data
-        password_form = PasswordChangeForm(user=request.user)  # Password form
 
-    return render(request, 'website/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form, 'user': request.user,
+    return render(request, 'website/edit_profile.html', {'profile_form': profile_form, 'user': request.user,
     })
 
 @login_required

@@ -20,7 +20,9 @@ active
 <p>Bio: {{ user.userprofile.bio }}</p>
 <p>Date Joined: {{ user.date_joined|date:"F j, Y" }}</p>
 
-
+<a href="{% url 'website:edit_profile' %}">
+    <button>Edit Profile</button>
+</a>
 
 <h3>Your Recipes</h3>
 {% if user_recipes %}
