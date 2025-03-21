@@ -98,3 +98,14 @@ article {
     padding: 0.125em 0.25em;
     border-radius: 0.25em;
 }
+
+@media (max-width: 768px) {
+    .recipes {
+        margin: 0.5em;
+        width: calc(100% - 1em);
+    }
+
+    .recipe-card {
+        flex-direction: column;
+    }
+}
