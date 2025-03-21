@@ -18,3 +18,11 @@
     font-weight: 400;
     text-align: center;
 }
+
+@media (max-width: 768px) {
+    .register-block {
+        margin: 0.5em;
+        width: calc(100% - 3em);
+        padding: 0.5em 1em;
+    }
+}
