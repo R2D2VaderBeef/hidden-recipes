@@ -11,9 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='like',
-            name='recipe',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipe_likes', to='website.Recipe'),
-        ),
+        #migrations.AlterField(
+        #    model_name='like',
+        #    name='recipe',
+        #    field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipe_likes', to='website.Recipe'),
+        #),
     ]
