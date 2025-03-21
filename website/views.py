@@ -144,54 +144,25 @@ def tags_view(request):
     return render(request, 'website/tags.html', context)
 
 
-from django.http import JsonResponse
-
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
-        try:
-            newTitle = request.POST["title"][0:128]
-            newDescription = request.POST["description"][0:512]
+        newTitle = request.POST["title"][0:128]
+        newDescription = request.POST["description"][0:512]
+        recipe = Recipe(title=newTitle, description=newDescription, ingredients=request.POST["ingredients"], instructions=request.POST["instructions"], picture=request.FILES["picture"])
+        recipe.poster = request.user  # Set the author of the recipe
+        recipe.date = timezone.now()
+        recipe.save()
+        
+        tags = request.POST["tags"].split(",")
+        for tag in tags:
+            if tag == "":
+                continue
             
-            recipe = Recipe(
-                title=newTitle,
-                description=newDescription,
-                ingredients=request.POST["ingredients"],
-                instructions=request.POST["instructions"],
-                picture=request.FILES["picture"]
-            )
-            recipe.poster = request.user
-            recipe.date = timezone.now()
-            recipe.save()
-            
-            tags = request.POST["tags"].split(",")
-            for tag in tags:
-                if tag == "":
-                    continue
-                else:
-                    recipe.tags.add(Tag.objects.get(pk=int(tag)))
-            
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                # Return a JSON response for AJAX requests
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': reverse('website:view_recipe', args=[recipe.id])  # Redirect to the new recipe's view page
-                })
             else:
-                # Redirect for regular form submissions
-                return redirect('website:view_recipe', recipe_id=recipe.id)
-       
-        except Exception as e:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': False,
-                    'error': str(e)
-                })
-            else:
-                return render(request, 'website/create_recipe.html', {
-                    'tags': serializers.serialize("json", Tag.objects.all()),
-                    'error': str(e)
-                })
+                recipe.tags.add(Tag.objects.get(pk=int(tag)))
+
+        return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
 
     return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
 @login_required
