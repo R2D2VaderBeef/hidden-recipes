@@ -15,7 +15,14 @@ active
 {% endblock %}
 
 {% block body_block %}
-    <h1>Hidden Recipes</h1>
+
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <h1>Hidden recipes</h1>
+    <div>
+        here is the tags page.<br />
+        <strong>{{ boldmessage }}</strong><br />
+    </div>
+
 
     <!-- Search Form -->
     <form method="GET" action="{% url 'website:tags' %}">

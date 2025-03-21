@@ -5,62 +5,7 @@
     --theme_yellow: #fff34b;
     --theme_black: #02111b;
     --theme_red: #fe5e41;
-
     --dull_yellow: #eae59d;
-}
-
-#start {
-    display: flex;
-    flex-direction: row;
-    font-family: "Monomakh";
-    margin-left: 0.5em;
-    font-size: 2em;
-    color: var(--theme_yellow);
-    align-self: center;
-}
-
-#centre {
-    /* flex: 0 1 15em; */
-    min-width: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-#centre>ul {
-    display: flex;
-    font-size: 1.25em;
-    gap: 1em;
-    padding: 0;
-}
-
-#end {
-    min-width: 225px;
-    align-items: center;
-    justify-content: flex-end;
-    display: flex;
-    flex-direction: row;
-}
-
-#end>ul {
-    display: flex;
-    font-size: 1.25em;
-    gap: 1em;
-    padding: 0;
-    align-items: center;
-}
-
-ul.tags li {
-    list-style-type: none;
-}
-
-ul.tags li a {
-    padding: 0.25em 0.5em;
-    border-radius: 0.5em;
-}
-
-ul.tags li a.active {
-    background-color: white;
 }
 
 body,
@@ -93,7 +38,18 @@ header {
     height: 2.5em;
 }
 
-li#avatar-icon {
+#start {
+    font-size: 2em;
+    color: var(--theme_yellow);
+}
+
+#centre,
+#end {
+    display: flex;
+    align-items: center;
+}
+
+#avatar-icon {
     padding: 0;
     border-radius: 50%;
     border: var(--theme_black) 2px solid;
@@ -101,15 +57,128 @@ li#avatar-icon {
     height: min-content;
     height: 48px;
     width: 48px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: var(--theme_green);
+    color: var(--theme_yellow);
+    border: none;
+    font-size: 1.25em;
+    cursor: pointer;
+    font-family: "Monomakh", serif;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-content a {
+    color: var(--theme_black);
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    border-radius: 5px;
+    height: min-content;
+    font-size: 1.25em;
 
 }
 
-li#avatar-icon img {
-    padding: 0;
-    vertical-align: bottom;
-    height: min-content;
-    border-radius: 50%;
-    width: 100%;
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.buttonLink {
+    background: var(--theme_yellow);
+    border: var(--theme_black) 2px solid;
+    color: var(--theme_black);
+    font-family: "Monomakh", serif;
+    border-radius: 0.5em;
+}
+
+.buttonLink:hover:not(:disabled) {
+    border-color: var(--theme_red);
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        height: auto;
+    }
+
+    #start {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    #centre,
+    #end {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #avatar-icon {
+        display: none;
+    }
+
+    .dropdown-content a {
+        border-radius: none;
+        padding: 12px 16px;
+    }
+
+    .dropdown-content a.active {
+        background-color: var(--theme_yellow);
+    }
+
+    .dropdown-content a:hover {
+        background-color: var(--theme_yellow);
+        color: var(--theme_red);
+    }
+}
+
+@media (min-width: 769px) {
+    .dropdown-content {
+        display: flex !important;
+        flex-direction: row;
+        position: static;
+        background-color: transparent;
+        box-shadow: none;
+        min-width: auto;
+        padding: 0;
+    }
+
+    .dropdown-content a {
+        margin: auto 10px;
+        background-color: var(--theme_yellow);
+        padding: 0.3em 0.5em;
+        border: var(--theme_black) 2px solid;
+    }
+
+    .dropdown-content a:hover {
+        border: var(--theme_red) 2px solid;
+    }
+
+    .dropbtn {
+        display: none;
+    }
+
+    .dropdown-content a.active {
+        background-color: white;
+    }
 }
 
 main {
@@ -132,22 +201,6 @@ main {
     align-items: center;
 }
 
-.avatar {
-    font-size: 40px;
-}
-
 .tabs {
     margin-top: 10px;
-}
-
-.buttonLink {
-    background: var(--theme_yellow);
-    border: var(--theme_black) 2px solid;
-    color: var(--theme_black);
-    font-family: "Monomakh", serif;
-    border-radius: 0.5em;
-}
-
-.buttonLink:hover:not(:disabled) {
-    border-color: var(--theme_red);
 }

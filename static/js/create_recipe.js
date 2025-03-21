@@ -100,7 +100,8 @@ async function submitRecipe(e) {
         body: formData
     })
 
-    console.log(await response.text());
+    let newId = await response.text();
+    window.location.href = data.redirect.replace("0", newId);
 }
 
 function cropPhoto() {
@@ -193,7 +194,9 @@ function addStep(e) {
     let textarea = document.getElementById("add-step")
     let text = textarea.value.replaceAll("\n", " ");
     let component = `
-    <span class="handle">⋮⋮</span>
+    <span class="handle">
+        <img src="{% static 'img/handle.svg' %}/>
+    </span>
     <textarea placeholder="Click the button on the right to delete" required>%text%</textarea>
     <button id="deletestep%counter%" onclick="deleteStep(event)">✕</button>
     `
@@ -220,7 +223,9 @@ function addMissingIngredient() {
 
 function addMissingStep(e) {
     let component = `
-    <span class="handle">⋮⋮</span>
+    <span class="handle">
+        <img src="{% static 'img/handle.svg' %}/>
+    </span>
     <textarea placeholder="Please add at least 1 step" required></textarea>
     <button id="deletestep%counter%" onclick="deleteStep(event)">✕</button>
     `
