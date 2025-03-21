@@ -82,12 +82,9 @@ article {
 .recipe-image {
     align-content: center;
     width: 320px;
-    display: contents !important;
 }
 
 .rcp-tags {
-    display: flex;
-    gap: 0.5em;
     padding: 0.7em 0;
 }
 
@@ -96,6 +93,7 @@ article {
     height: fit-content;
     padding: 0.125em 0.25em;
     border-radius: 0.25em;
+    margin: 0.25em 0.1em;
 }
 
 @media (max-width: 768px) {
@@ -110,5 +108,10 @@ article {
 
     .recipe-image {
         margin-top: 1em;
+        max-width: 100%;
+    }
+
+    .recipe-image img {
+        max-width: 100%;
     }
 }

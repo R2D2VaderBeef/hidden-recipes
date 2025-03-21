@@ -170,3 +170,26 @@ select {
         width: 100%;
     }
 }
+
+@media (max-width: 968px) {
+    #cropper-container {
+        display: block;
+    }
+
+    #previewContainer {
+        text-align: left;
+    }
+
+    cropper-viewer {
+        margin: 1em 0;
+        max-width: 100%;
+    }
+
+    cropper-canvas {
+        max-width: 100%;
+    }
+}
+
+#cropper-output canvas {
+    max-width: 100%;
+}

@@ -24,8 +24,8 @@
                 <div class="dropdown">
                     <button class="dropbtn">Recipes</button>
                     <div class="dropdown-content">
-                        <a href="{% url 'website:home' %}" class="{% block discover_active %}{% endblock %} buttonLink">Discover</a>
-                        <a href="{% url 'website:tags' %}" class="{% block tags_active %}{% endblock %} buttonLink">Tags</a>
+                        <a href="{% url 'website:home' %}" class="{% block discover_active %}{% endblock %}">Discover</a>
+                        <a href="{% url 'website:tags' %}" class="{% block tags_active %}{% endblock %}">Tags</a>
                     </div>
                 </div>
             </div>
@@ -34,13 +34,13 @@
                     <button class="dropbtn">Account</button>
                     <div class="dropdown-content">
                         {% if user.is_authenticated %}
-                        <a href="{% url 'website:profile' %}" class="{% block profile_active %}{% endblock %} buttonLink">Profile</a>
-                        <a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %} buttonLink">New Recipe</a>
-                        <a href="{% url 'website:logout' %}" class="buttonLink">Logout</a>
+                        <a href="{% url 'website:profile' %}" class="{% block profile_active %}{% endblock %}">Profile</a>
+                        <a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %}">New Recipe</a>
+                        <a href="{% url 'website:logout' %}">Logout</a>
                         <img id="avatar-icon" src="{{ user.profile.picture.url }}" alt="{{ user }}'s profile picture">
                         {% else %}
-                        <a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %} buttonLink">Register</a>
-                        <a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %} buttonLink">Log In</a>
+                        <a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %}">Register</a>
+                        <a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %}">Log In</a>
                         <img id="avatar-icon" src="{% static 'img/user_yellow.svg' %}" alt="">
                         {% endif %}
                     </div>
