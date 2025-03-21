@@ -195,7 +195,7 @@ function addStep(e) {
     let text = textarea.value.replaceAll("\n", " ");
     let component = `
     <span class="handle">
-        <img src="{% static 'img/handle.svg' %}/>
+        <img src="${data.handle}"/>
     </span>
     <textarea placeholder="Click the button on the right to delete" required>%text%</textarea>
     <button id="deletestep%counter%" onclick="deleteStep(event)">✕</button>
@@ -224,7 +224,7 @@ function addMissingIngredient() {
 function addMissingStep(e) {
     let component = `
     <span class="handle">
-        <img src="{% static 'img/handle.svg' %}/>
+        <img src="${data.handle}"/>
     </span>
     <textarea placeholder="Please add at least 1 step" required></textarea>
     <button id="deletestep%counter%" onclick="deleteStep(event)">✕</button>

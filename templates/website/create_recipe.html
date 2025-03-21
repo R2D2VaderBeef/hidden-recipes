@@ -10,7 +10,7 @@ active
 {% endblock %}
 
 {% block style_block %}
-    <script src="{% static 'js/create_recipe.js' %}" data-tags="{{ tags }}" data-redirect="{% url 'website:view_recipe' 0 %}"></script>
+    <script src="{% static 'js/create_recipe.js' %}" data-tags="{{ tags }}" data-redirect="{% url 'website:view_recipe' 0 %}" data-handle="{% static 'img/handle.svg' %}"></script>
     <script src="{% static 'js/third-party/Sortable.js' %}"></script>
     <script src="{% static 'js/third-party/multiselect-dropdown.js' %}"></script>
     <script src="{% static 'js/third-party/cropper.js' %}"></script>
@@ -59,7 +59,7 @@ active
         </div>
         <p class="shortcut">Ctrl / ⌘ + Enter to add.</p>
 
-        <input type="submit" value="Post Recipe"> <span>You'll be able to edit and delete your recipe after posting.</span>
+        <input type="submit" value="Post Recipe"> <span id="postButtonPrompt">You'll be able to edit and delete your recipe after posting.</span>
     </form>
 
 </div>
