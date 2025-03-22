@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from website.models import UserProfile
 from website.models import Recipe, Tag, Comment
 
+from django.utils import timezone
+
+
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     
@@ -23,8 +26,12 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('picture','bio')
+        fields = ('picture', 'bio')
 
+    def save(self, commit=True):
+        if not self.cleaned_data.get('picture'):
+            self.instance.picture = 'defaults/default_profile.png'
+        return super().save(commit=commit)
 
 class RecipeForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
@@ -32,6 +39,13 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = ['title', 'description', 'picture', 'ingredients', 'instructions', 'tags']
+    
+    def save(self, commit=True):
+
+        if not self.instance.pk: 
+            self.instance.date = timezone.now()
+        return super().save(commit=commit)
+       
 
 class CommentForm(forms.ModelForm):
 

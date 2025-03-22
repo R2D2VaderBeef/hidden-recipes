@@ -1,7 +1,7 @@
 .create-block {
     margin: auto;
     margin-top: 1.5em;
-    width: 70rem;
+    max-width: 70rem;
     background-color: white;
     border-radius: 0.75em;
     border: var(--theme_black) 2px solid;
@@ -28,7 +28,9 @@ form {
     padding-bottom: 0.5em;
 }
 
-#cropper-container, #instructions-flex, .single-step {
+#cropper-container,
+#instructions-flex,
+.single-step {
     display: flex;
     flex-direction: row;
 }
@@ -59,7 +61,8 @@ label:not(.multiselect-dropdown label) {
     padding-top: 0.3em;
 }
 
-.single-ingredient input, #add-ingredient {
+.single-ingredient input,
+#add-ingredient {
     width: 50%;
     margin-right: 0.5em;
 }
@@ -73,7 +76,8 @@ label:not(.multiselect-dropdown label) {
     border: 2px solid var(--theme_red);
 }
 
-#instructions-flex textarea, .single-step textarea {
+#instructions-flex textarea,
+.single-step textarea {
     margin-right: 0.8em;
 }
 
@@ -81,6 +85,7 @@ label:not(.multiselect-dropdown label) {
     font-size: 1.8em;
     padding: 0.9em 0.5em 0.9em 0;
     cursor: grab;
+    width: 15px;
 }
 
 .multiselect-dropdown {
@@ -141,4 +146,56 @@ select {
 .error {
     color: var(--theme_red);
     display: none;
+}
+
+@media (max-width: 768px) {
+    .create-block {
+        margin: 0.5em;
+        width: calc(100% - 1em);
+        padding: 0.5em 1em;
+    }
+
+    .multiselect-dropdown {
+        width: 100% !important;
+    }
+
+    #add-ingredient {
+        width: 100%;
+    }
+
+    .shortcut {
+        display: none;
+    }
+
+    #recipeForm input[type="submit"] {
+        width: 100%;
+    }
+}
+
+@media (max-width: 968px) {
+    #cropper-container {
+        display: block;
+    }
+
+    #previewContainer {
+        text-align: left;
+    }
+
+    cropper-viewer {
+        margin: 1em 0;
+        max-width: 100%;
+    }
+
+    cropper-canvas {
+        max-width: 100%;
+    }
+
+    #postButtonPrompt {
+        margin: 0.3em 0;
+        display: block;
+    }
+}
+
+#cropper-output canvas {
+    max-width: 100%;
 }
