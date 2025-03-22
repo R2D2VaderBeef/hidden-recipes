@@ -109,11 +109,15 @@ header {
     border-radius: 0.5em;
 }
 
-.buttonLink:hover:not(:disabled) {
+.buttonLink[aria-disabled="true"] {
+    background: var(--dull_yellow);
+}
+
+.buttonLink:hover:not([aria-disabled="true"]) {
     border-color: var(--theme_red);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     header {
         flex-direction: column;
         height: auto;
@@ -149,7 +153,7 @@ header {
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
     .dropdown-content {
         display: flex !important;
         flex-direction: row;
@@ -202,4 +206,8 @@ main {
 
 .tabs {
     margin-top: 10px;
+}
+
+.recipes {
+    margin-top: 20px;
 }
