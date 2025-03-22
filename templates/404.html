@@ -1,0 +1,20 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Page not found
+{% endblock %}
+
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
+
+{% block body_block %}
+<div class="register-block">
+    <h1>Page not found</h1>
+    <p class="register-success">
+        You've reached a page which doesn't currently exist.
+        <a href="{% url 'website:home' %}">Find new recipes</a><br />
+    </p>
+</div>
+{% endblock %}

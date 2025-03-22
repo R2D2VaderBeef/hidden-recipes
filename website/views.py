@@ -68,13 +68,22 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return redirect(reverse('website:home'))
+                next = request.POST.get('after_login')
+                if next is not None:
+                    return redirect(next)
+                else:
+                    return redirect(reverse('website:home'))
             else:
                 return render(request, 'website/login.html', context = {"error": True, "error_message": "Your account has been disabled."})
         else:
             return render(request, 'website/login.html', context = {"error": True, "error_message": "Incorrect username or password."})
     else:
-        return render(request, 'website/login.html')
+        after_login = request.GET.get('next')
+        if after_login is not None:
+            context = {"next": True, "after_login": after_login}
+        else:
+            context = {"next": False}
+        return render(request, 'website/login.html', context = context)
     
 @login_required
 def user_logout(request):
@@ -201,7 +210,7 @@ def view_recipe(request, recipe_id):
 
                 
     except Recipe.DoesNotExist:
-        return HttpResponse("Recipe not found", status=404)
+        return render(request, '404.html', status=404)
     
     context = {'recipe': recipe,'comments':comments, 'form':form, 'comment_count':comment_count}
     return render(request, 'website/recipe_view.html', context)
