@@ -210,7 +210,7 @@ def view_recipe(request, recipe_id):
 
                 
     except Recipe.DoesNotExist:
-        return HttpResponse("Recipe not found", status=404)
+        return render(request, '404.html', status=404)
     
     context = {'recipe': recipe,'comments':comments, 'form':form, 'comment_count':comment_count}
     return render(request, 'website/recipe_view.html', context)
