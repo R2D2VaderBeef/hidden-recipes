@@ -17,5 +17,6 @@ path('view-post/<int:recipe_id>/', views.view_recipe, name='view_recipe'),
 path('like/<int:recipe_id>/', views.like_recipe, name='like_recipe'),
 path('delete-comment/<int:comment_id>/',views.delete_comment,name='delete_comment'),
 path('delete-recipe/<int:recipe_id>/', views.delete_recipe, name='delete_recipe'),
+path('profile/edit/', views.edit_profile, name='edit_profile'),
 
 ]

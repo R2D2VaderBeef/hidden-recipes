@@ -4,9 +4,9 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.core.paginator import Paginator
 from django.core import serializers
 from django.utils import timezone
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from website.forms import UserForm, UserProfileForm
 from .models import Tag, Recipe, UserProfile, Comment
@@ -17,7 +17,16 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 def home(request):
-    recipes = Recipe.objects.all().order_by('-id')  # Get all recipes, newest first
+    recipes = Recipe.objects.all().order_by('-date') 
+    paginator = Paginator(recipes, 6)  #6recipes at a time
+    page_number = request.GET.get('page')
+    try:
+        recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        recipes = paginator.page(1)
+    except EmptyPage:
+        recipes = paginator.page(paginator.num_pages)
+
     return render(request, 'website/home.html', {'recipes': recipes})
 
 def tags(request):
@@ -59,39 +68,62 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return redirect(reverse('website:home'))
+                next = request.POST.get('after_login')
+                if next is not None:
+                    return redirect(next)
+                else:
+                    return redirect(reverse('website:home'))
             else:
                 return render(request, 'website/login.html', context = {"error": True, "error_message": "Your account has been disabled."})
         else:
             return render(request, 'website/login.html', context = {"error": True, "error_message": "Incorrect username or password."})
     else:
-        return render(request, 'website/login.html')
+        after_login = request.GET.get('next')
+        if after_login is not None:
+            context = {"next": True, "after_login": after_login}
+        else:
+            context = {"next": False}
+        return render(request, 'website/login.html', context = context)
     
 @login_required
 def user_logout(request):
     logout(request)
     return redirect(reverse('website:home'))
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import UserProfileForm
+from .models import Recipe
+
 @login_required
 def profile(request):
     # Get the user's profile
     user_profile = request.user.profile
 
-    user_recipes = Recipe.objects.filter(poster_id=request.user)
+    # Get the user's recipes, sorted by date (newest first)
+    user_recipes = Recipe.objects.filter(poster=request.user).order_by('-date')
+
+    return render(request, 'website/profile.html', {
+        'user_profile': user_profile,
+        'user_recipes': user_recipes,
+    })
+
+@login_required
+def edit_profile(request):
+    user_profile = request.user.profile
 
     if request.method == 'POST':
         profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
-
         if profile_form.is_valid():
             profile_form.save()
             return redirect('website:profile')
     else:
         profile_form = UserProfileForm(instance=user_profile)
 
-    return render(request, 'website/profile.html', {
+    return render(request, 'website/edit_profile.html', {
         'profile_form': profile_form,
-        'user_recipes': user_recipes  
     })
+
 
 @login_required
 def delete_account(request):
@@ -121,7 +153,6 @@ def tags_view(request):
     return render(request, 'website/tags.html', context)
 
 
-
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
@@ -136,14 +167,13 @@ def create_recipe(request):
         for tag in tags:
             if tag == "":
                 continue
+            
             else:
                 recipe.tags.add(Tag.objects.get(pk=int(tag)))
 
         return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
 
     return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
-
-
 @login_required
 def edit_recipe(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id, poster_id=request.user)
@@ -191,7 +221,7 @@ def view_recipe(request, recipe_id):
 
                 
     except Recipe.DoesNotExist:
-        return HttpResponse("Recipe not found", status=404)
+        return render(request, '404.html', status=404)
     
     context = {'recipe': recipe,'comments':comments, 'form':form, 'comment_count':comment_count}
     return render(request, 'website/recipe_view.html', context)

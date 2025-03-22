@@ -26,6 +26,9 @@ active
     {% endif %}
     <form id="login_form" method="post" action="{% url 'website:login' %}">
         {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="after_login" value="{{ after_login }}">
+        {% endif %}
         <label for="username">Username:</label><br />
         <input type="text" name="username" value="" size="25" required/>
         <br />
