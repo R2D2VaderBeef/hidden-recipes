@@ -51,6 +51,10 @@ document.getElementById("like-button").addEventListener("click", function() {
 
     {% if user == recipe.poster %}
     <a href="{% url 'website:edit_recipe' recipe.id %}">Edit Recipe</a>
+    <form action="{% url 'website:delete_recipe' recipe.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Delete Recipe</button>
+    </form>
 {% endif %}
 
 

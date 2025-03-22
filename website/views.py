@@ -158,6 +158,17 @@ def edit_recipe(request, recipe_id):
 
     return render(request, 'website/edit_recipe.html', {'form': form, 'recipe': recipe})
 
+@login_required
+def delete_recipe(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id, poster_id=request.user)
+    
+    if request.method == 'POST':
+        recipe.delete()
+        return redirect('website:home')
+    else:
+        return HttpResponse("Cannot delete recipe", status=404)
+
+    
 
 
 def view_recipe(request, recipe_id):
