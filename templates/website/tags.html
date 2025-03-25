@@ -33,7 +33,7 @@ active
     <!-- Recipe List -->
     <section class="recipes">
         {% if recipes %}
-            <h3>Showing {{ recipes.paginator.count }} recipes</h3>
+            <h3>Showing {{ recipes|length }} of {{ recipes.paginator.count }} recipes</h3>
 
             {% for recipe in recipes %}
                 <article class="recipe-card">

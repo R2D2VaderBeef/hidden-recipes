@@ -2,7 +2,7 @@
 {% load static %} 
 
 {% block title_block %}
-    Profile
+    Liked Recipes
 {% endblock %}
 
 {% block style_block %}
@@ -10,12 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
 {% endblock %}
 
-{% block profile_active %}
-    active
-{% endblock %}
-
 {% block body_block %}
-    <h1>Welcome, {{ user.username }}!</h1>
+<h1>Welcome, {{ user.username }}!</h1>
 
     {% if user.userprofile.picture %}
         <img src="{{ user.userprofile.picture.url }}" alt="Profile Picture" style="max-width: 150px;">
@@ -30,14 +26,15 @@
     <a href="{% url 'website:profile' %}" class="btn buttonLink">Posts</a>
     <a href="{% url 'website:liked_recipes' %}" class="btn buttonLink">Liked</a>
 
-    <h3>Your Recipes (Showing {{ user_recipes|length }} out of {{ user_recipes.paginator.count }})</h3>
-    {% if user_recipes %}
+
+    <h3>Your Liked Recipes (Showing {{ liked_recipes|length }} out of {{ liked_recipes.paginator.count }})</h3>
+
+    {% if liked_recipes %}
     <section class="recipes">
-        {% for recipe in user_recipes %}
+        {% for recipe in liked_recipes %}
             <article class="recipe-card">
                 <div class="recipe-text">
                     <div class="recipe-header">
-                        <!-- Check if poster.profile.picture exists -->
                         {% if recipe.poster.profile.picture %}
                             <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
                         {% else %}
@@ -62,7 +59,6 @@
                     </div>
                 </div>
                 <div class="recipe-image">
-                    <!-- Check if recipe.picture exists -->
                     {% if recipe.picture %}
                         <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
                     {% else %}
@@ -71,24 +67,23 @@
                 </div>
             </article>
         {% endfor %}
-    </section> 
-    <!-- Pagination Controls -->
-    <div class="pagination">
-        {% if user_recipes.has_previous %}
-            <a href="?page=1" class="btn buttonLink">First</a>
-            <a href="?page={{ user_recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
-        {% endif %}
+    </section>
+  <!-- Pagination Controls -->
+  <div class="pagination">
+    {% if liked_recipes.has_previous %}
+        <a href="?page=1" class="btn buttonLink">First</a>
+        <a href="?page={{ liked_recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
+    {% endif %}
 
-        <span>Page {{ user_recipes.number }} of {{ user_recipes.paginator.num_pages }}</span>
+    <span>Page {{ liked_recipes.number }} of {{ liked_recipes.paginator.num_pages }}</span>
 
-        {% if user_recipes.has_next %}
-            <a href="?page={{ user_recipes.next_page_number }}" class="btn buttonLink">Next</a>
-            <a href="?page={{ user_recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
-        {% endif %}
+    {% if liked_recipes.has_next %}
+        <a href="?page={{ liked_recipes.next_page_number }}" class="btn buttonLink">Next</a>
+        <a href="?page={{ liked_recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
+    {% endif %}
     </div>
 
     {% else %}
-    <p>You have not created any recipes yet.</p>
+    <p>You have not liked any recipes yet.</p>
     {% endif %}
-
 {% endblock %}
