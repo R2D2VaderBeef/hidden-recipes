@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from website.forms import UserForm, UserProfileForm
-from .models import Tag, Recipe, UserProfile, Comment
+from .models import User, Tag, Recipe, UserProfile, Comment
 from .forms import RecipeForm, CommentForm
 
 def home(request):
@@ -192,7 +193,7 @@ def edit_recipe(request, recipe_id):
   
 @login_required
 def edit_profile(request):
-    user_profile = request.user.userprofile  #get profile
+    user_profile = request.user.profile  #get profile
 
     if request.method == 'POST':  
         profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile) #set profile
