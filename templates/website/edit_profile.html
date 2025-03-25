@@ -12,12 +12,12 @@
 
 {% block body_block %}
 <h1>Edit Profile</h1>
-
+<br>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
     <p>Your Current Username: {{ user.username }}</p>
-
+    <br>
     <label for="new_username"><h4>Change Username:</h4></label>
     <input type="text" name="new_username" value="{{ user.username }}" required>
     <button type="submit" name="action" value="change_username">Save Username</button>
@@ -26,7 +26,11 @@
 
 
     <h4>Change Password</h4>
-    {{ password_form.as_p }}
+<p> Old Password</p>
+    <input type="text" name="old_password" value="{{ user.password }}" required>
+    <br>
+    <P> New Password</P>
+    <input type="text" name="new_password" value="{{ user.password }}" required>
     <button type="submit" name="action" value="change_password">Change Password</button>
 
     <hr>
