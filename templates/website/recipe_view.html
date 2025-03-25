@@ -3,70 +3,104 @@
 
 {% block title_block %}
     {{ recipe.title }}
+{% endblock %}
+
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/view_recipe.css' %}">
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
+    <script src="{% static 'js/view_recipe.js' %}" data-recipe="{{ recipe.id }}" data-csrf="{{ csrf_token }}"></script>
 {% endblock %}
 
 {% block body_block %}
-    <h1>{{ recipe.title }}</h1>
-    <p><strong>Description:</strong> {{ recipe.description }}</p>
-    <p><strong>Likes:</strong> <span id="likes-count">{{ recipe.likes.count }}</span></p>
+<article class="recipe-card">
+    <div class="recipe-text">
+        <div class="recipe-header">
+            <!-- Check if poster.profile.picture exists -->
+            {% if recipe.poster.profile.picture %}
+                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
+            {% else %}
+                <img class="rcp-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+            {% endif %}
 
-<button id="like-button" data-recipe-id="{{ recipe.id }}">
-    {% if user in recipe.likes.all %}
-        Unlike
-    {% else %}
-        Like
-    {% endif %}
-</button>
+            <span class="rcp-author">{{ recipe.poster.username }}</span>
+            <span class="rcp-time">{{ recipe.date }}</span>
+        </div>
+        <h1 class="rcp-title">{{ recipe.title }}</h1>
+        <p>{{ recipe.description }}</p>
 
-<script>
-document.getElementById("like-button").addEventListener("click", function() {
-    let recipeId = this.getAttribute("data-recipe-id");
-    let button = this;
-    let likeCount = document.getElementById("likes-count");
+        <h3 class="recipe-subheading">Ingredients</h3>
+        <ul class="ingredients-list">
+            {% for ingredient in ingredients %}
+                <li>{{ ingredient }}</li>
+            {% endfor %}
+        </ul>
 
-    fetch(`/like/${recipeId}/`, {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": "{{ csrf_token }}",
-            "Content-Type": "application/json"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        likeCount.innerText = data.likes_count;
-        button.innerText = data.liked ? "Unlike" : "Like";
-    });
-});
-</script>
+        <h3 class="recipe-subheading">Instructions</h3>
+        <ol class="steps-list">
+            {% for instr in instructions %}
+                <li>{{ instr }}</li>
+            {% endfor %}
+        </ol>
+
+    </div>
+    <div class="recipe-image">
+        {% if user == recipe.poster %}
+        <div class="controls">
+            <a href="{% url 'website:edit_recipe' recipe.id %}" class="buttonLink">Edit Recipe</a>
+            <form action="{% url 'website:delete_recipe' recipe.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="buttonLink">Delete Recipe</button>
+            </form>
+        </div>
+        {% endif %}
+        {% if recipe.picture %}
+            <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
+        {% else %}
+            <img src="{% static 'defaults/default_16x10.png' %}" alt="Default Recipe Image">
+        {% endif %}
+        <div class="recipe-footer">
+            <span class="likes">
+                <img id="likeSvg"
+                {% if user in recipe.likes.all %}
+                    class="liked"
+                {% endif %}
+                src="{% static 'img/like.svg' %}" />
+                <span id="likes-count">{{ recipe.likes.count }}</span>
+                {% if user.is_authenticated %}
+                    <button id="like-button" class="buttonLink">
+                        {% if user in recipe.likes.all %}
+                            Unlike
+                        {% else %}
+                            Like
+                        {% endif %}
+                    </button>   
+                {% endif %}
+            </span>
+            
+        </div>
+        <h3 class="rcp-title smaller">
+            Tags
+        </h3>
+        <div class="rcp-tags">
+            {% for tag in recipe.tags.all %}
+                <a class="buttonLink" href="{% url 'website:tags' %}?tags={{ tag.name }}">{{ tag.name }}</a> 
+            {% endfor %}
+        </div>
+    </div>
 
 
-    <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
-    <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
-    <p><strong>Tags:</strong> 
-        {% for tag in recipe.tags.all %}
-            {{ tag.name }}{% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    </p>
-    <p><strong>Posted by:</strong> {{ recipe.poster.username }}</p>
 
-    {% if user == recipe.poster %}
-    <a href="{% url 'website:edit_recipe' recipe.id %}">Edit Recipe</a>
-    <form action="{% url 'website:delete_recipe' recipe.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Delete Recipe</button>
-    </form>
-{% endif %}
+</article>
 
-
-<h3>Comments ({{ comment_count}})</h3>
-<div id = "comments-section">
+<section class="recipe-block">
+    <h3>Comments ({{ comment_count}})</h3>
+    <div id = "comments-section">
     {% for comment in comments %}
         <div>
             <p><strong>{{ comment.poster }}</strong> says:</p>
             <p>{{ comment.text }}</p>
             <p><small>{{ comment.date }}</small></p>
-
+            
             {% if comment.poster == request.user %}
                 <form action="{% url 'website:delete_comment' comment.id %}" method="post">
                     {% csrf_token %}
@@ -77,8 +111,8 @@ document.getElementById("like-button").addEventListener("click", function() {
     {% empty %}
         <p>No comments yet.</p>
     {% endfor %}
-</div>
-{% if user.is_authenticated %}
+    </div>
+    {% if user.is_authenticated %}
         <h4>Add a Comment</h4>
         <form method="post">
             {% csrf_token %}
@@ -88,4 +122,6 @@ document.getElementById("like-button").addEventListener("click", function() {
     {% else %}
         <p><a href="{% url 'website:login' %}">Log in</a> to post a comment.</p>
     {% endif %}
+</section>
+
 {% endblock %}

@@ -26,7 +26,7 @@ active
 
     <!-- Search Form -->
     <form method="GET" action="{% url 'website:tags' %}">
-        <input type="text" name="q" value="{{ query }}" placeholder="Search by tag..." />
+        <input type="text" name="tags" value="{{ query }}" placeholder="Search by tag..." />
         <button type="submit">Search</button>
     </form>
 

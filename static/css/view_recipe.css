@@ -1,0 +1,96 @@
+.recipe-block {
+    margin: auto;
+    margin-top: 1.5em;
+    max-width: 70rem;
+    background-color: white;
+    border-radius: 0.75em;
+    border: var(--theme_black) 2px solid;
+    padding: 1em 2em;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .recipe-block {
+        margin: 0.5em;
+        width: calc(100% - 1em);
+        padding: 0.5em 1em;
+    }
+}
+
+.recipe-subheading {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-top: 0.5em;
+    margin-bottom: 0.2em;
+}
+
+.ingredients-list {
+    margin: 0.2em 0;
+}
+
+.interactions img {
+    height: 1.5em;
+}
+
+.recipe-footer {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0.3em 0;
+}
+
+.recipe-footer button {
+    font-size: 0.7em;
+    vertical-align: middle;
+    border-radius: 0.25em;
+    padding: 0.1em 0.3em;
+}
+
+.recipe-footer>span>span {
+    margin-right: 0.3em;
+    margin-left: 0.1em;
+}
+
+.liked {
+    filter: invert(46%) sepia(14%) saturate(7417%) hue-rotate(337deg) brightness(108%) contrast(99%);
+}
+
+.smaller {
+    font-size: 1.4rem !important;
+}
+
+.rcp-tags {
+    padding-top: 0 !important;
+}
+
+.steps-list {
+    margin: 0.5em 0;
+}
+
+.steps-list li {
+    margin-bottom: 0.5em;
+}
+
+.recipe-image {
+    padding-top: 1em;
+    align-content: unset !important;
+}
+
+.controls {
+    margin-bottom: 1em;
+}
+
+.controls .buttonLink {
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0.25em 0.5em;
+    text-decoration: none;
+}
+
+.controls form {
+    display: inline;
+    margin-left: 1em;
+}
+
+.controls form button:hover {
+    background-color: var(--theme_red);
+}
