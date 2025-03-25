@@ -8,24 +8,38 @@
 {% block style_block %}
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block profile_active %}
+    active
 {% endblock %}
 
 {% block body_block %}
-<h1>Welcome, {{ user.username }}!</h1>
+    <div class="profile-card"> 
+        <div class="profile-info">
+            <div class="profile-header">
+                {% if user.userprofile.picture %}
+                    <img class="profile-avatar" src="{{ user.userprofile.picture.url }}" alt="Profile Picture">
+                {% else %}
+                    <img class="profile-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+                {% endif %}
+                <h3>{{ user.username }}</h3>
+            </div>
 
-    {% if user.userprofile.picture %}
-        <img src="{{ user.userprofile.picture.url }}" alt="Profile Picture" style="max-width: 150px;">
-    {% endif %}
+            <p class="bio">{{ request.user.profile.bio }}</p>
 
+            <div class="profile-stats">
+                <span>Date Joined: {{ user.date_joined|date:"F j, Y" }}</span> |  
+                <span>Recipes: {{ user_recipes}}</span> |  
+                <span>Likes Received: {{ total_likes }}</span>
+            </div>
 
-    <h3>Your Profile</h3>
-    <p>Bio: {{ user.userprofile.bio }}</p>
-    <p>Date Joined: {{ user.date_joined|date:"F j, Y" }}</p>
-
+        </div>
+    </div>
     <a href="{% url 'website:edit_profile' %}" class="btn buttonLink">Edit Profile</a>
     <a href="{% url 'website:profile' %}" class="btn buttonLink">Posts</a>
     <a href="{% url 'website:liked_recipes' %}" class="btn buttonLink">Liked</a>
-
 
     <h3>Your Liked Recipes (Showing {{ liked_recipes|length }} out of {{ liked_recipes.paginator.count }})</h3>
 
