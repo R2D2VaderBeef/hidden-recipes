@@ -1,9 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -11,10 +10,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from website.forms import UserForm, UserProfileForm
 from .models import Tag, Recipe, UserProfile, Comment
 from .forms import RecipeForm, CommentForm
-
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
 
 def home(request):
     recipes = Recipe.objects.all().order_by('-date') 
@@ -89,11 +84,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect(reverse('website:home'))
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import UserProfileForm
-from .models import Recipe
 
 @login_required
 def profile(request):
@@ -174,8 +164,8 @@ def delete_account(request):
 
 
 def tags_view(request):
-    query = request.GET.get('q', '')  # Get search query from URL parameters
-    recipes = Recipe.objects.all()
+    query = request.GET.get('tags', '')  # Get search query from URL parameters
+    recipes = Recipe.objects.all().order_by('-date') 
 
     if query:
         recipes = recipes.filter(tags__name__icontains=query)  # Filter recipes by tag name
@@ -212,6 +202,7 @@ def create_recipe(request):
         return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
 
     return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
+
 @login_required
 def edit_recipe(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id, poster_id=request.user)
@@ -228,20 +219,19 @@ def edit_recipe(request, recipe_id):
 
 @login_required
 def delete_recipe(request, recipe_id):
-    recipe = Recipe.objects.get(id=recipe_id, poster_id=request.user)
-    
     if request.method == 'POST':
-        recipe.delete()
-        return redirect('website:home')
-    else:
-        return HttpResponse("Cannot delete recipe", status=404)
-
-    
-
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        if recipe.poster == request.user:
+            recipe.delete()
+            return redirect('website:home')
+        else:
+            return HttpResponse("Cannot delete recipe", status=401)
 
 def view_recipe(request, recipe_id):
     try:
         recipe = Recipe.objects.get(id=recipe_id)
+        ingredients = recipe.ingredients.split("\n")
+        instructions = recipe.instructions.split("\n")
         comments = recipe.comments.all()
         comment_count = comments.count()
         form = CommentForm()
@@ -261,7 +251,7 @@ def view_recipe(request, recipe_id):
     except Recipe.DoesNotExist:
         return render(request, '404.html', status=404)
     
-    context = {'recipe': recipe,'comments':comments, 'form':form, 'comment_count':comment_count}
+    context = {'recipe': recipe, 'ingredients': ingredients, 'instructions': instructions, 'comments': comments, 'form': form, 'comment_count': comment_count}
     return render(request, 'website/recipe_view.html', context)
 
 def delete_comment(request,comment_id):
