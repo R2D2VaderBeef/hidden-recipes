@@ -1,4 +1,4 @@
-.login-block {
+.delete_account-block {
     margin: auto;
     margin-top: 1.5em;
     width: 310px;
@@ -8,17 +8,17 @@
     padding: 1em 1em;
 }
 
-.login-block h1 {
+.delete_account-block h1 {
     text-align: center;
 }
 
-.login-byline {
+.delete_account-byline {
     font-size: 1.2em;
     font-weight: 600;
     margin: 0.5em 0;
 }
 
-.login-error {
+.delete_account-error {
     font-size: 1.2em;
     border: var(--theme_red) 2px solid;
     border-radius: 0.5em;
@@ -29,7 +29,7 @@
 }
 
 @media (max-width: 768px) {
-    .login-block {
+    .delete_account-block {
         margin: 0.5em;
         width: calc(100% - 3em);
         padding: 0.5em 1em;

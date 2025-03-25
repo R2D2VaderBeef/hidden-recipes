@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pagination.css' %}">
 {% endblock %}
 
 {% block discover_active %}
@@ -16,71 +16,77 @@ active
 
 {% block body_block %}
 <section class="recipes">
-    <article class="recipe-card">
-        <div class="recipe-text">
-            <div class="recipe-header">
-                <img class="rcp-avatar" src="https://placehold.jp/25x25.png" alt="">
-                <span class="rcp-author">foodlover99</span>
-                <span class="rcp-time">14 hours ago</span>
-            </div>
-            <h3 class="rcp-title">Home-style chicken curry</h3>
-            <p class="rcp-desc">
-                <span>This authentic recipe traces its roots back to my father's upbringing in a
-                    Bihari household in Northern India. A fairly mild dish (with options to increase the spice),
-                    this curry pairs well with plain rice or even naan and some vegetables.</span>
-            </p>
-            <a href="#">Read full recipe</a>
-            <div class="rcp-tags">
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=indian">Indian</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chicken">Chicken</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=tomato">Tomato</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=onion">Onion</a>
-            </div>
-            <div class="recipe-footer">
-                <span class="likes"><img src="static/img/like.svg" /> 12</span>
-                <span class="comments"><img src="static/img/comment.svg" /> 0</span>
-            </div>
-        </div>
-        <div class="recipe-image">
-            <img src="https://placehold.jp/240x135.png" alt="Home-style chicken curry">
-        </div>
-    </article>
 
+    <h3>Showing {{ recipes|length }} of {{ recipes.paginator.count }} recipes</h3>
+
+    {% for recipe in recipes %}
+    
     <article class="recipe-card">
         <div class="recipe-text">
             <div class="recipe-header">
-                <img class="rcp-avatar" src="https://placehold.jp/25x25.png" alt="">
-                <span class="rcp-author">foodlover99</span>
-                <span class="rcp-time">2 weeks ago</span>
+                <!-- Check if poster.profile.picture exists -->
+                {% if recipe.poster.profile.picture %}
+                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="{{ recipe.poster.username }}'s profile picture">
+
+                {% else %}
+                    <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
+                {% endif %}
+
+                <span class="rcp-author">{{ recipe.poster.username }}</span>
+                <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
             </div>
-            <h3 class="rcp-title">Cashew nut chicken</h3>
+            <h3 class="rcp-title">{{ recipe.title }}</h3>
             <p class="rcp-desc">
-                <span>This Chinese-inspired dish requires a few ingredients you may not already have -
-                    but its delicious flavour makes acquiring them well worth it! I recommend serving it with
-                    noodles.</span>
+                <span>{{ recipe.description }}</span>
             </p>
-            <a href="#">Read full recipe</a>
+            <a href="{% url 'website:view_recipe' recipe.id %}">Read full recipe</a>
             <div class="rcp-tags">
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chinese">Chinese</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=chicken">Chicken</a> 
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags=capsicum">Capsicum</a>
+                {% for tag in recipe.tags.all %}
+                    <a class="buttonLink" href="{% url 'website:tags' %}?tags={{ tag.name }}">{{ tag.name }}</a> 
+                {% endfor %}
             </div>
             <div class="recipe-footer">
-                <span class="likes"><img src="static/img/like.svg" /> 6</span>
-                <span class="comments"><img src="static/img/comment.svg" /> 3</span>
+                <span class="likes"><img src="{% static 'img/like.svg' %}" /> {{ recipe.likes.count }}</span>
+                <span class="comments"><img src="{% static 'img/comment.svg' %}" /> {{ recipe.comments.count }}</span>
             </div>
         </div>
         <div class="recipe-image">
-            <img src="https://placehold.jp/240x135.png" alt="Cashew nut chicken">
+
+            <!-- Check if recipe.picture exists -->
+            {% if recipe.picture %}
+                <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
+            {% else %}
+                <img src="{{ MEDIA_URL }}defaults/default_16x10.png" alt="Default Recipe Image">
+            {% endif %}
+
         </div>
     </article>
+    {% empty %}
+        <p>No recipes available yet. Be the first to add one!</p>
+    {% endfor %}
 </section>
 
 <div class="pagination">
-    <button class="btn buttonLink">Previous Page</button>
-    <button class="btn buttonLink">Next Page</button>
+
+    {% if recipes.has_previous %}
+        <a href="?page=1" class="btn buttonLink">First</a>
+        <a href="?page={{ recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
+    {% else %}
+        <a class="btn buttonLink" role="link" aria-disabled="true">First</a>
+        <a class="btn buttonLink" role="link" aria-disabled="true">Previous</a>
+    {% endif %}
+
+
+    <span>Page {{ recipes.number }} of {{ recipes.paginator.num_pages }}</span>
+    
+    {% if recipes.has_next %}
+        <a href="?page={{ recipes.next_page_number }}" class="btn buttonLink">Next</a>
+        <a href="?page={{ recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
+    {% else %}
+        <a class="btn buttonLink" role="link" aria-disabled="true">Next</a>
+        <a class="btn buttonLink" role="link" aria-disabled="true">Last</a>
+    {% endif %}
+
 </div>
 
-
 {% endblock %}
-

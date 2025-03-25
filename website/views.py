@@ -1,75 +1,56 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-
-from website.forms import UserForm, UserProfileForm
-
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
-from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
+from django.core import serializers
+from django.utils import timezone
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from django.contrib import messages
-from django.shortcuts import render
-from .models import Tag, Recipe
-from django.core.paginator import Paginator
-from .forms import RecipeForm
-from django.contrib.auth.forms import PasswordChangeForm
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.models import User
-
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import UserProfileForm
-# Form for updating the user profile
-from .forms import UserProfileForm
-
-# Model for the user profile (assumed that you have this model)
-from .models import UserProfile
-
-
+from website.forms import UserForm, UserProfileForm
+from .models import Tag, Recipe, UserProfile, Comment
+from .forms import RecipeForm, CommentForm
 
 def home(request):
-    return render(request, 'website/home.html')
+    recipes = Recipe.objects.all().order_by('-date') 
+    paginator = Paginator(recipes, 6)  #6recipes at a time
+    page_number = request.GET.get('page')
+    try:
+        recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        recipes = paginator.page(1)
+    except EmptyPage:
+        recipes = paginator.page(paginator.num_pages)
+
+    return render(request, 'website/home.html', {'recipes': recipes})
 
 def tags(request):
     return render(request, 'website/tags.html')
 
+def recipe_view(request):
+    return render(request, 'website/recipe_view.html')
 
 def register(request):
     registered = False
     if request.method == 'POST':
         user_form = UserForm(request.POST)
-        profile_form = UserProfileForm(request.POST)
         
-        if user_form.is_valid() and profile_form.is_valid():
+        if user_form.is_valid():
             user = user_form.save()
             user.set_password(user.password)
             user.save()
-            profile = profile_form.save(commit=False)
-            profile.user = user
 
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
-
+            profile = UserProfile(user=user)
             profile.save()
+
             registered = True
-            
-        else:
-            print(user_form.errors, profile_form.errors)
+
     else:
         user_form = UserForm()
-        profile_form = UserProfileForm()
-
 
     return render(request,
                 'website/register.html',
                 context = {'user_form': user_form,
-                            'profile_form': profile_form,
                             'registered': registered})
 
 
@@ -82,13 +63,22 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return redirect(reverse('website:home'))
+                next = request.POST.get('after_login')
+                if next is not None:
+                    return redirect(next)
+                else:
+                    return redirect(reverse('website:home'))
             else:
                 return render(request, 'website/login.html', context = {"error": True, "error_message": "Your account has been disabled."})
         else:
             return render(request, 'website/login.html', context = {"error": True, "error_message": "Incorrect username or password."})
     else:
-        return render(request, 'website/login.html')
+        after_login = request.GET.get('next')
+        if after_login is not None:
+            context = {"next": True, "after_login": after_login}
+        else:
+            context = {"next": False}
+        return render(request, 'website/login.html', context = context)
     
 @login_required
 def user_logout(request):
@@ -97,43 +87,62 @@ def user_logout(request):
 
 @login_required
 def profile(request):
-    # Get the user's profile
-    user_profile = request.user.userprofile
+    user_profile = request.user.profile
 
-    user_recipes = Recipe.objects.filter(poster_id=request.user)
+    user_recipes_queryset = Recipe.objects.filter(poster=request.user).order_by('-date')
+    paginator = Paginator(user_recipes_queryset, 6) 
+    page_number = request.GET.get('page')
 
-    if request.method == 'POST':
-        profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
-
-        if profile_form.is_valid():
-            profile_form.save()
-            return redirect('website:profile')  # Redirect to the profile page after saving
-    else:
-        profile_form = UserProfileForm(instance=user_profile)
+    try:
+        user_recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        user_recipes = paginator.page(1)
+    except EmptyPage:
+        user_recipes = paginator.page(paginator.num_pages)
+    
+    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
 
     return render(request, 'website/profile.html', {
-        'profile_form': profile_form,
-        'user_recipes': user_recipes  
+        'user_profile': user_profile,
+        'user_recipes': user_recipes,
+        'total_likes': total_likes,
+
     })
 
-@login_required
-def delete_account(request):
-    if request.method == "POST":
-        user = request.user
-        user.delete()        
-        return redirect('website:home')
-    return render(request,'website/delete_account.html')
 
+@login_required
+def liked_recipes(request):
+    user_profile = request.user.profile
+    user_recipes_queryset = Recipe.objects.filter(poster=request.user).order_by('-date')
+    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
+
+    liked_recipes_queryset = request.user.liked_recipes.all().order_by('-date')
+    paginator = Paginator(liked_recipes_queryset, 6)
+    page_number = request.GET.get('page')
+    user_recipes = user_recipes_queryset.count
+    try:
+        liked_recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        liked_recipes = paginator.page(1)
+    except EmptyPage:
+        liked_recipes = paginator.page(paginator.num_pages)
+
+    return render(request, 'website/liked.html', {
+        'user_profile': user_profile,
+        'liked_recipes': liked_recipes,
+        'user_recipes': user_recipes,
+        'total_likes': total_likes,
+    })
 
 
 def tags_view(request):
-    query = request.GET.get('q', '')  # Get search query from URL parameters
-    recipes = Recipe.objects.all()
+    query = request.GET.get('tags', '')  # Get search query from URL parameters
+    recipes = Recipe.objects.all().order_by('-date') 
 
     if query:
         recipes = recipes.filter(tags__name__icontains=query)  # Filter recipes by tag name
 
-    paginator = Paginator(recipes, 2)  # Paginate results (2 recipes per page)
+    paginator = Paginator(recipes, 6)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -144,22 +153,27 @@ def tags_view(request):
     return render(request, 'website/tags.html', context)
 
 
-
 @login_required
 def create_recipe(request):
     if request.method == 'POST':
-        form = RecipeForm(request.POST)
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.poster = request.user  # Set the author of the recipe
-            recipe.save()  
-            form.save_m2m()  # Save the many-to-many relationships (tags)
-            return redirect('website:home')  # Redirect to homepage after saving
-    else:
-        form = RecipeForm()
+        newTitle = request.POST["title"][0:128]
+        newDescription = request.POST["description"][0:512]
+        recipe = Recipe(title=newTitle, description=newDescription, ingredients=request.POST["ingredients"], instructions=request.POST["instructions"], picture=request.FILES["picture"])
+        recipe.poster = request.user  # Set the author of the recipe
+        recipe.date = timezone.now()
+        recipe.save()
+        
+        tags = request.POST["tags"].split(",")
+        for tag in tags:
+            if tag == "":
+                continue
+            
+            else:
+                recipe.tags.add(Tag.objects.get(pk=int(tag)))
 
-    return render(request, 'website/create_recipe.html', {'form': form})
+        return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
 
+    return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
 
 @login_required
 def edit_recipe(request, recipe_id):
@@ -168,14 +182,14 @@ def edit_recipe(request, recipe_id):
     if request.method == 'POST':
         form = RecipeForm(request.POST, instance=recipe)
         if form.is_valid():
-            form.save()  # Save changes to the recipe
-            return redirect('website:profile')  # Redirect to the profile page after saving
+            form.save()  
+            return redirect('website:profile')  
     else:
         form = RecipeForm(instance=recipe)
 
     return render(request, 'website/edit_recipe.html', {'form': form, 'recipe': recipe})
 
-
+  
 @login_required
 def edit_profile(request):
     user_profile = request.user.userprofile  #get profile
@@ -222,3 +236,63 @@ def delete_account(request):
         user.delete()
         return redirect('website:home')
     return render(request, 'website/delete_account.html')
+
+@login_required
+def delete_recipe(request, recipe_id):
+    if request.method == 'POST':
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        if recipe.poster == request.user:
+            recipe.delete()
+            return redirect('website:home')
+        else:
+            return HttpResponse("Cannot delete recipe", status=401)
+
+def view_recipe(request, recipe_id):
+    try:
+        recipe = Recipe.objects.get(id=recipe_id)
+        ingredients = recipe.ingredients.split("\n")
+        instructions = recipe.instructions.split("\n")
+        comments = recipe.comments.all()
+        comment_count = comments.count()
+        form = CommentForm()
+        
+        if request.method == "POST":
+             form = CommentForm(request.POST)
+             if form.is_valid():
+                comment = form.save(commit=False)
+                comment.poster = request.user
+                comment.recipe = recipe
+                comment.save()
+                return redirect('website:view_recipe', recipe_id = recipe.id)
+             else:
+                form = CommentForm()
+
+                
+    except Recipe.DoesNotExist:
+        return render(request, '404.html', status=404)
+    
+    context = {'recipe': recipe, 'ingredients': ingredients, 'instructions': instructions, 'comments': comments, 'form': form, 'comment_count': comment_count}
+    return render(request, 'website/recipe_view.html', context)
+
+def delete_comment(request,comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if comment.poster == request.user:
+        comment.delete()
+        return redirect('website:view_recipe',recipe_id=comment.recipe.id)
+    else:
+        return HttpResponse("Cannot delete comment", status=404)
+
+
+@login_required
+def like_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user = request.user
+
+    if user in recipe.likes.all():
+        recipe.likes.remove(user)
+        liked = False
+    else:
+        recipe.likes.add(user)
+        liked = True
+
+    return JsonResponse({"liked": liked, "likes_count": recipe.likes.count()})

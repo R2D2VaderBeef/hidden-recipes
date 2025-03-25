@@ -1,23 +1,44 @@
 {% extends 'website/base.html' %}
 
+{% load static %}
+
 {% block title_block %}
     Delete Account
 {% endblock %}
 
+
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/delete_account.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
+
+
 {% block body_block %}
-<p>Are you sure you want to delete account?</p>
+
+<div class="delete_account-block">
+    <h3>Are you sure you want to delete your account?</h3>
+    <br />
+
+    {% if error %}
+        <p class="delete_account-error">
+            {{ error_message }}
+        </p>
+    {% endif %}
+
+
 
 <form method="post" action="{% url 'website:delete_account' %}">
     {% csrf_token %}
     <input type="submit" name="submit" value="Yes" />
+</form>
 
-</form><br />
-
-<form method="post" action="{% url 'website:profile' %}">
-    {% csrf_token %}
-    <input type="submit" name="submit" value="Cancel" />
-
-</form><br />
+<input type="submit" value="Cancel" onclick="goBack()"/>
+<script>
+    function goBack() {
+        window.location.href = "{% url 'website:profile' %}"
+    }
+</script>
 
 {% endblock %}
 

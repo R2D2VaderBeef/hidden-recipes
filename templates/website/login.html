@@ -26,10 +26,13 @@ active
     {% endif %}
     <form id="login_form" method="post" action="{% url 'website:login' %}">
         {% csrf_token %}
-        <label for="username">Username</label><br />
+        {% if next %}
+            <input type="hidden" name="after_login" value="{{ after_login }}">
+        {% endif %}
+        <label for="username">Username:</label><br />
         <input type="text" name="username" value="" size="25" required/>
         <br />
-        <label for="password">Password</label><br />
+        <label for="password">Password:</label><br />
         <input type="password" name="password" value="" size="25" required/>
         <br />
         <input type="submit" value="Log In" />
