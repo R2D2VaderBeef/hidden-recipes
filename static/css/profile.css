@@ -1,0 +1,38 @@
+.profile-card {
+    max-width: 70rem;
+    margin: 1.25rem auto;
+    background: #fff;
+    padding: 1rem;
+    border: var(--theme_black) 2px solid;
+    border-radius: 0.75em;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: #02111b 2px solid;
+    margin-right: 1rem;
+}
+
+.bio {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.profile-stats {
+    font-size: 0.9rem;
+    color: #666;
+}

@@ -109,20 +109,27 @@ def profile(request):
         user_recipes = paginator.page(1)
     except EmptyPage:
         user_recipes = paginator.page(paginator.num_pages)
+    
+    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
 
     return render(request, 'website/profile.html', {
         'user_profile': user_profile,
         'user_recipes': user_recipes,
+        'total_likes': total_likes,
+
     })
 
 
 @login_required
 def liked_recipes(request):
     user_profile = request.user.profile
+    user_recipes_queryset = Recipe.objects.filter(poster=request.user).order_by('-date')
+    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
+
     liked_recipes_queryset = request.user.liked_recipes.all().order_by('-date')
     paginator = Paginator(liked_recipes_queryset, 6)
     page_number = request.GET.get('page')
-
+    user_recipes = user_recipes_queryset.count
     try:
         liked_recipes = paginator.page(page_number)
     except PageNotAnInteger:
@@ -133,6 +140,8 @@ def liked_recipes(request):
     return render(request, 'website/liked.html', {
         'user_profile': user_profile,
         'liked_recipes': liked_recipes,
+        'user_recipes': user_recipes,
+        'total_likes': total_likes,
     })
 
 
