@@ -52,6 +52,7 @@ article {
 
 .recipe-card {
     padding: 1em;
+    box-sizing: border-box;
     border-radius: 0.75em;
     display: flex;
     flex-direction: row;
@@ -63,6 +64,12 @@ article {
 
 .recipe-card h3.rcp-title {
     font-size: 1.75rem;
+    font-weight: 500;
+    margin: 0.2em 0;
+}
+
+.recipe-card h1.rcp-title {
+    font-size: 2rem;
     font-weight: 500;
     margin: 0.2em 0;
 }
@@ -96,11 +103,13 @@ article {
     margin: 0.25em 0.1em;
 }
 
-@media (max-width: 768px) {
-    .recipes {
-        margin: 0.5em;
-        width: calc(100% - 1em);
+@media (min-width: 769px) {
+    .recipe-text {
+        padding-right: 1em;
     }
+}
+
+@media (max-width: 768px) {
 
     .recipe-card {
         flex-direction: column;

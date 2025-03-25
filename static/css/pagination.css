@@ -1,0 +1,33 @@
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0.25em 0.5em;
+}
+
+.btn:disabled {
+    background-color: var(--dull_yellow);
+}
+
+.pagination .btn {
+    margin: 0 0.2em;
+}
+
+.pagination span {
+    font-weight: 400;
+    margin: 0 0.4em;
+}
+
+@media (max-width: 428px) {
+    .pagination .btn {
+        display: block;
+    }
+
+    .pagination * {
+        margin: 0.7em 0 !important;
+    }
+}

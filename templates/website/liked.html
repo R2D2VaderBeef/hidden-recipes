@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pagination.css' %}">
 {% endblock %}
 
 {% block profile_active %}
@@ -16,15 +16,16 @@
 {% endblock %}
 
 {% block body_block %}
-    <div class="profile-card"> 
+    <div class="profile-card">
         <div class="profile-info">
             <div class="profile-header">
-                {% if user.userprofile.picture %}
-                    <img class="profile-avatar" src="{{ user.userprofile.picture.url }}" alt="Profile Picture">
+                {% if user.profile.picture %}
+                    <img class="profile-avatar" src="{{ user.profile.picture.url }}" alt="{{ user.username }}'s Profile Picture">
                 {% else %}
-                    <img class="profile-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+                    <img class="profile-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                 {% endif %}
-                <h3>{{ user.username }}</h3>
+                <h1>{{ user.username }}</h1>
+                <a href="{% url 'website:edit_profile' %}" class="btn buttonLink">Edit Profile</a>
             </div>
 
             <p class="bio">{{ request.user.profile.bio }}</p>
@@ -34,14 +35,15 @@
                 <span>Recipes: {{ user_recipes}}</span> |  
                 <span>Likes Received: {{ total_likes }}</span>
             </div>
-
         </div>
     </div>
-    <a href="{% url 'website:edit_profile' %}" class="btn buttonLink">Edit Profile</a>
-    <a href="{% url 'website:profile' %}" class="btn buttonLink">Posts</a>
-    <a href="{% url 'website:liked_recipes' %}" class="btn buttonLink">Liked</a>
 
-    <h3>Your Liked Recipes (Showing {{ liked_recipes|length }} out of {{ liked_recipes.paginator.count }})</h3>
+    <div class="page-switcher">
+        <a href="{% url 'website:profile' %}" class="btn buttonLink">Posts</a>
+        <a href="{% url 'website:liked_recipes' %}" class="btn buttonLink active">Liked</a>
+
+        <h3>Showing {{ liked_recipes|length }} out of {{ liked_recipes.paginator.count }} liked recipes</h3>
+    </div>
 
     {% if liked_recipes %}
     <section class="recipes">
@@ -87,6 +89,9 @@
     {% if liked_recipes.has_previous %}
         <a href="?page=1" class="btn buttonLink">First</a>
         <a href="?page={{ liked_recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
+    {% else %}
+        <a class="btn buttonLink" role="link" aria-disabled="true">First</a>
+        <a class="btn buttonLink" role="link" aria-disabled="true">Previous</a>
     {% endif %}
 
     <span>Page {{ liked_recipes.number }} of {{ liked_recipes.paginator.num_pages }}</span>
@@ -94,6 +99,9 @@
     {% if liked_recipes.has_next %}
         <a href="?page={{ liked_recipes.next_page_number }}" class="btn buttonLink">Next</a>
         <a href="?page={{ liked_recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
+    {% else %}
+        <a class="btn buttonLink" role="link" aria-disabled="true">Next</a>
+        <a class="btn buttonLink" role="link" aria-disabled="true">Last</a>
     {% endif %}
     </div>
 
