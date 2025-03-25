@@ -1,6 +1,7 @@
 {% extends 'website/base.html' %}
 {% load static %}
 
+
 {% block title_block %}
     Edit Profile
 {% endblock %}
@@ -9,22 +10,38 @@
     active
 {% endblock %}
 
-{% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-{% endblock %}
-
 {% block body_block %}
-    <div class="profile-card">
-        <h1>Edit Profile</h1>
+<h1>Edit Profile</h1>
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ profile_form.as_p }}
-            <input type="submit" value="Save changes" class="buttonLink">
-        </form>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
 
-        <a href="{% url 'website:profile' %}" class="buttonLink">Cancel</a>
+    <p>Your Current Username: {{ user.username }}</p>
 
-        <a href="{% url 'website:delete_account' %}" class="buttonLink">Delete Account</a>
-    </div>
+    <label for="new_username"><h4>Change Username:</h4></label>
+    <input type="text" name="new_username" value="{{ user.username }}" required>
+    <button type="submit" name="action" value="change_username">Save Username</button>
+
+    <hr>
+
+
+    <h4>Change Password</h4>
+    {{ password_form.as_p }}
+    <button type="submit" name="action" value="change_password">Change Password</button>
+
+    <hr>
+
+
+    <h4>Profile Details</h4>
+    {{ profile_form.as_p }}
+    <button type="submit" name="action" value="save_profile">Save Profile</button>
+
+    <hr>
+
+
+</form>
+
+
+
+<a href="{% url 'website:delete_account' %}">Delete Account</a>
 {% endblock %}
