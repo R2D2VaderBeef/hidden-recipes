@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
@@ -19,10 +18,10 @@
     <div class="profile-card"> 
         <div class="profile-info">
             <div class="profile-header">
-                {% if user.userprofile.picture %}
-                    <img class="profile-avatar" src="{{ user.userprofile.picture.url }}" alt="Profile Picture">
+                {% if user.profile.picture %}
+                    <img class="profile-avatar" src="{{ user.profile.picture.url }}" alt="{{ user.username }}'s Profile Picture">
                 {% else %}
-                    <img class="profile-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+                    <img class="profile-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                 {% endif %}
                 <h3>{{ user.username }}</h3>
             </div>

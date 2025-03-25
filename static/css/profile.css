@@ -5,6 +5,7 @@
     padding: 1rem;
     border: var(--theme_black) 2px solid;
     border-radius: 0.75em;
+    box-sizing: border-box;
 }
 
 .profile-info {

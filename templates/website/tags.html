@@ -42,9 +42,9 @@ active
                         <div class="recipe-header">
                             <!-- Check if poster.profile.picture exists -->
                             {% if recipe.poster.profile.picture %}
-                                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
+                                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="{{ recipe.poster.username }}'s Profile Picture">
                             {% else %}
-                                <img class="rcp-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+                                <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                             {% endif %}
                             <span class="rcp-author">{{ recipe.poster.username }}</span>
                             <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
@@ -69,7 +69,7 @@ active
                         {% if recipe.picture %}
                             <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
                         {% else %}
-                            <img src="{% static 'defaults/default_16x10.png' %}" alt="Default Recipe Image">
+                            <img src="{{ MEDIA_URL }}defaults/default_16x10.png" alt="Default Recipe Image">
                         {% endif %}
                     </div>
                 </article>

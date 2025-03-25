@@ -6,7 +6,6 @@
 {% endblock %}
 
 {% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
@@ -19,10 +18,10 @@
     <div class="profile-card">
         <div class="profile-info">
             <div class="profile-header">
-                {% if user.userprofile.picture %}
-                    <img class="profile-avatar" src="{{ user.userprofile.picture.url }}" alt="Profile Picture">
+                {% if user.profile.picture %}
+                    <img class="profile-avatar" src="{{ user.profile.picture.url }}" alt="{{ user.username }}'s Profile Picture">
                 {% else %}
-                    <img class="profile-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+                    <img class="profile-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                 {% endif %}
                 <h3>{{ user.username }}</h3>
             </div>
@@ -50,9 +49,9 @@
                 <div class="recipe-text">
                     <div class="recipe-header">
                         {% if recipe.poster.profile.picture %}
-                            <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
+                            <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="{{ recipe.poster.username }}'s Profile Picture">
                         {% else %}
-                            <img class="rcp-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
+                            <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                         {% endif %}
                         <span class="rcp-author">{{ recipe.poster.username }}</span>
                         <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
@@ -77,7 +76,7 @@
                     {% if recipe.picture %}
                         <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
                     {% else %}
-                        <img src="{% static 'defaults/default_16x10.png' %}" alt="Default Recipe Image">
+                        <img src="{{ MEDIA_URL }}defaults/default_16x10.png" alt="Default Recipe Image">
                     {% endif %}
                 </div>
             </article>
