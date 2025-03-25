@@ -247,7 +247,7 @@ def view_recipe(request, recipe_id):
         recipe = Recipe.objects.get(id=recipe_id)
         ingredients = recipe.ingredients.split("\n")
         instructions = recipe.instructions.split("\n")
-        comments = recipe.comments.all()
+        comments = recipe.comments.all().order_by('-date') 
         comment_count = comments.count()
         form = CommentForm()
         
