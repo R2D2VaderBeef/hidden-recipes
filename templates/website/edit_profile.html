@@ -26,17 +26,19 @@
 
 
     <h4>Change Password</h4>
-<p> Old Password</p>
-    <input type="text" name="old_password" value="{{ user.password }}" required>
+    <p> Old Password</p>
+    <input type="password" name="old_password" required>
     <br>
     <P> New Password</P>
-    <input type="text" name="new_password" value="{{ user.password }}" required>
+    <input type="password" name="new_password" required>
     <button type="submit" name="action" value="change_password">Change Password</button>
+</form>
 
     <hr>
 
-
+<form method="post" enctype="multipart/form-data">
     <h4>Profile Details</h4>
+    {% csrf_token %}
     {{ profile_form.as_p }}
     <button type="submit" name="action" value="save_profile">Save Profile</button>
 

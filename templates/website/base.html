@@ -37,7 +37,11 @@
                         <a href="{% url 'website:profile' %}" class="{% block profile_active %}{% endblock %}">Profile</a>
                         <a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %}">New Recipe</a>
                         <a href="{% url 'website:logout' %}">Logout</a>
-                        <img id="avatar-icon" src="{{ user.profile.picture.url }}" alt="{{ user }}'s profile picture"></li>
+                            {% if user.profile.picture %}
+                                <img id="avatar-icon" src="{{ user.profile.picture.url }}" alt="{{ user }}'s Profile Picture">
+                            {% else %}
+                                <img id="avatar-icon" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
+                            {% endif %}
                         {% else %}
                         <a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %}">Register</a>
                         <a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %}">Log In</a>

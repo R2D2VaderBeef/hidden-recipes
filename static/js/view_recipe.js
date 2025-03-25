@@ -2,6 +2,7 @@ const data = document.currentScript.dataset;
 
 window.addEventListener("load", function (event) {
     document.getElementById("like-button").addEventListener("click", likePost);
+    document.getElementById("id_text").placeholder = "Remember to be respectful!"
 });
 
 function likePost() {

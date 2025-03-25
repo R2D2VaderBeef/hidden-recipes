@@ -2,13 +2,14 @@
 {% load static %}
 
 {% block title_block %}
-    {{ recipe.title }}
+{{ recipe.title }}
 {% endblock %}
 
 {% block style_block %}
-    <link rel="stylesheet" href="{% static 'css/view_recipe.css' %}">
-    <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
-    <script src="{% static 'js/view_recipe.js' %}" data-recipe="{{ recipe.id }}" data-csrf="{{ csrf_token }}"></script>
+<link rel="stylesheet" href="{% static 'css/view_recipe.css' %}">
+<link rel="stylesheet" href="{% static 'css/recipe.css' %}">
+<link rel="stylesheet" href="{% static 'css/form.css' %}">
+<script src="{% static 'js/view_recipe.js' %}" data-recipe="{{ recipe.id }}" data-csrf="{{ csrf_token }}"></script>
 {% endblock %}
 
 {% block body_block %}
@@ -17,9 +18,10 @@
         <div class="recipe-header">
             <!-- Check if poster.profile.picture exists -->
             {% if recipe.poster.profile.picture %}
-                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="{{ recipe.poster.username }}'s Profile Picture">
+            <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}"
+                alt="{{ recipe.poster.username }}'s Profile Picture">
             {% else %}
-                <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
+            <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
             {% endif %}
 
             <span class="rcp-author">{{ recipe.poster.username }}</span>
@@ -31,14 +33,14 @@
         <h3 class="recipe-subheading">Ingredients</h3>
         <ul class="ingredients-list">
             {% for ingredient in ingredients %}
-                <li>{{ ingredient }}</li>
+            <li>{{ ingredient }}</li>
             {% endfor %}
         </ul>
 
         <h3 class="recipe-subheading">Instructions</h3>
         <ol class="steps-list">
             {% for instr in instructions %}
-                <li>{{ instr }}</li>
+            <li>{{ instr }}</li>
             {% endfor %}
         </ol>
 
@@ -54,36 +56,33 @@
         </div>
         {% endif %}
         {% if recipe.picture %}
-            <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
+        <img src="{{ recipe.picture.url }}" alt="{{ recipe.title }}">
         {% else %}
-            <img src="{{ MEDIA_URL }}defaults/default_16x10.png" alt="Default Recipe Image">
+        <img src="{{ MEDIA_URL }}defaults/default_16x10.png" alt="Default Recipe Image">
         {% endif %}
         <div class="recipe-footer">
             <span class="likes">
-                <img id="likeSvg"
-                {% if user in recipe.likes.all %}
-                    class="liked"
-                {% endif %}
-                src="{% static 'img/like.svg' %}" />
+                <img id="likeSvg" {% if user in recipe.likes.all %} class="liked" {% endif %}
+                    src="{% static 'img/like.svg' %}" />
                 <span id="likes-count">{{ recipe.likes.count }}</span>
                 {% if user.is_authenticated %}
-                    <button id="like-button" class="buttonLink">
-                        {% if user in recipe.likes.all %}
-                            Unlike
-                        {% else %}
-                            Like
-                        {% endif %}
-                    </button>   
+                <button id="like-button" class="buttonLink">
+                    {% if user in recipe.likes.all %}
+                    Unlike
+                    {% else %}
+                    Like
+                    {% endif %}
+                </button>
                 {% endif %}
             </span>
-            
+
         </div>
         <h3 class="rcp-title smaller">
             Tags
         </h3>
         <div class="rcp-tags">
             {% for tag in recipe.tags.all %}
-                <a class="buttonLink" href="{% url 'website:tags' %}?tags={{ tag.name }}">{{ tag.name }}</a> 
+            <a class="buttonLink" href="{% url 'website:tags' %}?tags={{ tag.name }}">{{ tag.name }}</a>
             {% endfor %}
         </div>
     </div>
@@ -92,28 +91,19 @@
 
 </article>
 
-<section class="recipe-block">
-    <h3>Comments ({{ comment_count}})</h3>
-    <div id = "comments-section">
-    {% for comment in comments %}
-        <div>
-            <p><strong>{{ comment.poster }}</strong> says:</p>
-            <p>{{ comment.text }}</p>
-            <p><small>{{ comment.date }}</small></p>
-            
-            {% if comment.poster == request.user %}
-                <form action="{% url 'website:delete_comment' comment.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Delete Comment</button>
-                </form>
-            {% endif %}
-        </div>
-    {% empty %}
-        <p>No comments yet.</p>
-    {% endfor %}
-    </div>
+<section class="recipe-block comments">
+    <h2 class="recipe-subheading">Comments ({{ comment_count}})</h2>
     {% if user.is_authenticated %}
-        <h4>Add a Comment</h4>
+        <div class="recipe-header">
+            {% if user.profile.picture %}
+            <img class="rcp-avatar" src="{{ user.profile.picture.url }}"
+                alt="{{ recipe.poster.username }}'s Profile Picture">
+            {% else %}
+            <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
+            {% endif %}
+
+            <span class="rcp-author bigger">Write a comment</span>
+        </div>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p}}
@@ -122,6 +112,37 @@
     {% else %}
         <p><a href="{% url 'website:login' %}">Log in</a> to post a comment.</p>
     {% endif %}
+
+    {% for comment in comments %}
+    <div class="recipe-card">
+        <div class="recipe-text">
+            <div class="recipe-header">
+                <!-- Check if poster.profile.picture exists -->
+                {% if comment.poster.profile.picture %}
+                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}"
+                    alt="{{ comment.poster.username }}'s Profile Picture">
+                {% else %}
+                <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
+                {% endif %}
+
+                <span class="rcp-author">{{ comment.poster.username }}</span>
+                <span class="rcp-time">{{ recipe.date }}</span>
+            </div>
+
+            <p>{{ comment.text }}</p>
+
+            {% if comment.poster == request.user %}
+            <form class="deleteComment" action="{% url 'website:delete_comment' comment.id %}" method="post">
+                {% csrf_token %}
+                <button class="buttonLink" type="submit">Delete Comment</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p>No comments yet.</p>
+    {% endfor %}
+
 </section>
 
 {% endblock %}
