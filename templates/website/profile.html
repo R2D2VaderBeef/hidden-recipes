@@ -24,7 +24,8 @@
                 {% else %}
                     <img class="profile-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                 {% endif %}
-                <h3>{{ user.username }}</h3>
+                <h1>{{ user.username }}</h1>
+                <a href="{% url 'website:edit_profile' %}" class="btn buttonLink">Edit Profile</a>
             </div>
 
             <p class="bio">{{ request.user.profile.bio }}</p>
@@ -34,15 +35,16 @@
                 <span>Recipes: {{ user_recipes.paginator.count }}</span> |  
                 <span>Likes Received: {{ total_likes }}</span>
             </div>
-
         </div>
     </div>
-    <a href="{% url 'website:edit_profile' %}" class="btn buttonLink">Edit Profile</a>
-    <a href="{% url 'website:profile' %}" class="btn buttonLink">Posts</a>
-    <a href="{% url 'website:liked_recipes' %}" class="btn buttonLink">Liked</a>
 
+    <div class="page-switcher">
+        <a href="{% url 'website:profile' %}" class="btn buttonLink active">Posts</a>
+        <a href="{% url 'website:liked_recipes' %}" class="btn buttonLink">Liked</a>
 
-    <h3>Your Recipes (Showing {{ user_recipes|length }} out of {{ user_recipes.paginator.count }})</h3>
+        <h3>Showing {{ user_recipes|length }} out of {{ user_recipes.paginator.count }} recipes</h3>
+    </div>
+    
     {% if user_recipes %}
     <section class="recipes">
         {% for recipe in user_recipes %}
