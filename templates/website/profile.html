@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block body_block %}
-    <div class="profile-card">  <!-- Added Profile Card Box -->
+    <div class="profile-card">
         <div class="profile-info">
             <div class="profile-header">
                 {% if user.userprofile.picture %}
@@ -49,7 +49,6 @@
             <article class="recipe-card">
                 <div class="recipe-text">
                     <div class="recipe-header">
-                        <!-- Check if poster.profile.picture exists -->
                         {% if recipe.poster.profile.picture %}
                             <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
                         {% else %}
