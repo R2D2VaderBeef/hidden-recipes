@@ -60,7 +60,6 @@ article {
 
 .recipe-text {
     flex-grow: 1;
-    padding-right: 1em;
 }
 
 .recipe-card h3.rcp-title {
@@ -102,6 +101,12 @@ article {
     padding: 0.125em 0.25em;
     border-radius: 0.25em;
     margin: 0.25em 0.1em;
+}
+
+@media (min-width: 769px) {
+    .recipe-text {
+        padding-right: 1em;
+    }
 }
 
 @media (max-width: 768px) {

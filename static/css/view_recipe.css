@@ -17,6 +17,12 @@
     }
 }
 
+@media (min-width: 769px) {
+    .recipe-text {
+        padding-left: 0.3em;
+    }
+}
+
 .recipe-subheading {
     font-size: 1.5rem;
     font-weight: 500;
