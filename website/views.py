@@ -87,16 +87,54 @@ def user_logout(request):
 
 @login_required
 def profile(request):
-    # Get the user's profile
     user_profile = request.user.profile
 
-    # Get the user's recipes, sorted by date (newest first)
-    user_recipes = Recipe.objects.filter(poster=request.user).order_by('-date')
+    user_recipes_queryset = Recipe.objects.filter(poster=request.user).order_by('-date')
+    paginator = Paginator(user_recipes_queryset, 6) 
+    page_number = request.GET.get('page')
+
+    try:
+        user_recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        user_recipes = paginator.page(1)
+    except EmptyPage:
+        user_recipes = paginator.page(paginator.num_pages)
+    
+    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
 
     return render(request, 'website/profile.html', {
         'user_profile': user_profile,
         'user_recipes': user_recipes,
+        'total_likes': total_likes,
+
     })
+
+
+@login_required
+def liked_recipes(request):
+    user_profile = request.user.profile
+    user_recipes_queryset = Recipe.objects.filter(poster=request.user).order_by('-date')
+    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
+
+    liked_recipes_queryset = request.user.liked_recipes.all().order_by('-date')
+    paginator = Paginator(liked_recipes_queryset, 6)
+    page_number = request.GET.get('page')
+    user_recipes = user_recipes_queryset.count
+    try:
+        liked_recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        liked_recipes = paginator.page(1)
+    except EmptyPage:
+        liked_recipes = paginator.page(paginator.num_pages)
+
+    return render(request, 'website/liked.html', {
+        'user_profile': user_profile,
+        'liked_recipes': liked_recipes,
+        'user_recipes': user_recipes,
+        'total_likes': total_likes,
+    })
+
+
 
 @login_required
 def edit_profile(request):
@@ -132,7 +170,7 @@ def tags_view(request):
     if query:
         recipes = recipes.filter(tags__name__icontains=query)  # Filter recipes by tag name
 
-    paginator = Paginator(recipes, 2)  # Paginate results (2 recipes per page)
+    paginator = Paginator(recipes, 6)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

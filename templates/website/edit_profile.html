@@ -1,5 +1,5 @@
 {% extends 'website/base.html' %}
-{% load static %} 
+{% load static %}
 
 {% block title_block %}
     Edit Profile
@@ -9,18 +9,22 @@
     active
 {% endblock %}
 
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block body_block %}
-    <h1>Edit Profile</h1>
+    <div class="profile-card">
+        <h1>Edit Profile</h1>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ profile_form.as_p }}
-        <input type="submit" value="Save changes">
-    </form>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ profile_form.as_p }}
+            <input type="submit" value="Save changes" class="buttonLink">
+        </form>
 
-    <a href="{% url 'website:profile' %}">Cancel</a>
+        <a href="{% url 'website:profile' %}" class="buttonLink">Cancel</a>
 
-    <a href="{% url 'website:delete_account' %}">Delete Account</a>
-
-
+        <a href="{% url 'website:delete_account' %}" class="buttonLink">Delete Account</a>
+    </div>
 {% endblock %}
