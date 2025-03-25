@@ -17,15 +17,17 @@ active
 {% block body_block %}
 <section class="recipes">
 
-    <h3>Showing {{ recipes.paginator.count }} recipes</h3>
+    <h3>Showing {{ recipes|length }} of {{ recipes.paginator.count }} recipes</h3>
 
     {% for recipe in recipes %}
+    
     <article class="recipe-card">
         <div class="recipe-text">
             <div class="recipe-header">
                 <!-- Check if poster.profile.picture exists -->
                 {% if recipe.poster.profile.picture %}
-                    <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="Profile Picture">
+                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}" alt="{{ recipe.poster.username }}'s profile picture">
+
                 {% else %}
                     <img class="rcp-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
                 {% endif %}
