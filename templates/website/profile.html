@@ -8,6 +8,7 @@
 {% block style_block %}
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pagination.css' %}">
 {% endblock %}
 
 {% block profile_active %}
@@ -87,6 +88,9 @@
         {% if user_recipes.has_previous %}
             <a href="?page=1" class="btn buttonLink">First</a>
             <a href="?page={{ user_recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
+        {% else %}
+            <a class="btn buttonLink" role="link" aria-disabled="true">First</a>
+            <a class="btn buttonLink" role="link" aria-disabled="true">Previous</a>
         {% endif %}
 
         <span>Page {{ user_recipes.number }} of {{ user_recipes.paginator.num_pages }}</span>
@@ -94,6 +98,9 @@
         {% if user_recipes.has_next %}
             <a href="?page={{ user_recipes.next_page_number }}" class="btn buttonLink">Next</a>
             <a href="?page={{ user_recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
+        {% else %}
+            <a class="btn buttonLink" role="link" aria-disabled="true">Next</a>
+            <a class="btn buttonLink" role="link" aria-disabled="true">Last</a>
         {% endif %}
     </div>
 
