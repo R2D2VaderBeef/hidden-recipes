@@ -19,28 +19,31 @@
     <div class="profile-card">
         <div class="profile-info">
             <div class="profile-header">
-                {% if user.profile.picture %}
-                    <img class="profile-avatar" src="{{ user.profile.picture.url }}" alt="{{ user.username }}'s Profile Picture">
+                {% if user_profile.user.profile.picture %}
+                    <img class="profile-avatar" src="{{ user_profile.user.profile.picture.url }}" alt="{{ user_profile.user.username }}'s Profile Picture">
                 {% else %}
                     <img class="profile-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                 {% endif %}
-                <h1>{{ user.username }}</h1>
-                <a href="{% url 'website:edit_profile' %}" class="btn buttonLink">Edit Profile</a>
+                <h1>{{ user_profile.user.username }}</h1>
+                {% if is_own_profile %}
+                    <a href="{% url 'website:edit_profile' %}" class="btn buttonLink">Edit Profile</a>
+                {% endif %}
+        
             </div>
 
-            <p class="bio">{{ request.user.profile.bio }}</p>
+            <p class="bio">{{ user_profile.user.profile.bio }}</p>
 
             <div class="profile-stats">
-                <span>Date Joined: {{ user.date_joined|date:"F j, Y" }}</span> |  
-                <span>Recipes: {{ user_recipes}}</span> |  
+                <span>Date Joined: {{ user_profile.user.date_joined|date:"F j, Y" }}</span> |  
+                <span>Recipes: {{ created_recipe_count }}</span> |  
                 <span>Likes Received: {{ total_likes }}</span>
             </div>
         </div>
     </div>
 
     <div class="page-switcher">
-        <a href="{% url 'website:profile' %}" class="btn buttonLink">Posts</a>
-        <a href="{% url 'website:liked_recipes' %}" class="btn buttonLink active">Liked</a>
+        <a href="{% url 'website:profile' user_profile.user.username %}" class="btn buttonLink">Posts</a>
+        <a href="{% url 'website:liked_recipes' user_profile.user.username %}" class="btn buttonLink active">Liked</a>
 
         <h3>Showing {{ liked_recipes|length }} out of {{ liked_recipes.paginator.count }} liked recipes</h3>
     </div>
@@ -56,7 +59,7 @@
                         {% else %}
                             <img class="rcp-avatar" src="{% static 'defaults/default_profile.png' %}" alt="Default Profile Picture">
                         {% endif %}
-                        <span class="rcp-author">{{ recipe.poster.username }}</span>
+                        <a class="rcp-author" href="{% url 'website:profile' recipe.poster.username %}">{{ recipe.poster.username }}</a>
                         <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
                     </div>
                     <h3 class="rcp-title">{{ recipe.title }}</h3>

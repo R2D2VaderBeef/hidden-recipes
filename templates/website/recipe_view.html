@@ -24,7 +24,7 @@
             <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
             {% endif %}
 
-            <span class="rcp-author">{{ recipe.poster.username }}</span>
+            <a class="rcp-author" href="{% url 'website:profile' recipe.poster.username %}">{{ recipe.poster.username }}</a>
             <span class="rcp-time">{{ recipe.date }}</span>
         </div>
         <h1 class="rcp-title">{{ recipe.title }}</h1>
@@ -119,13 +119,13 @@
             <div class="recipe-header">
                 <!-- Check if poster.profile.picture exists -->
                 {% if comment.poster.profile.picture %}
-                <img class="rcp-avatar" src="{{ recipe.poster.profile.picture.url }}"
+                <img class="rcp-avatar" src="{{ comment.poster.profile.picture.url }}"
                     alt="{{ comment.poster.username }}'s Profile Picture">
                 {% else %}
                 <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                 {% endif %}
 
-                <span class="rcp-author">{{ comment.poster.username }}</span>
+                <a class="rcp-author" href="{% url 'website:profile' comment.poster.username %}">{{ comment.poster.username }}</a>
                 <span class="rcp-time">{{ recipe.date }}</span>
             </div>
 

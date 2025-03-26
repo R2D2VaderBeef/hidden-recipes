@@ -46,7 +46,7 @@ active
                             {% else %}
                                 <img class="rcp-avatar" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
                             {% endif %}
-                            <span class="rcp-author">{{ recipe.poster.username }}</span>
+                            <a class="rcp-author" href="{% url 'website:profile' recipe.poster.username %}">{{ recipe.poster.username }}</a>
                             <span class="rcp-time">{{ recipe.date|timesince }} ago</span>
                         </div>
                         <h3 class="rcp-title">{{ recipe.title }}</h3>

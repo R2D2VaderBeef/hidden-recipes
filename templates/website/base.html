@@ -34,7 +34,7 @@
                     <button class="dropbtn">Account</button>
                     <div class="dropdown-content">
                         {% if user.is_authenticated %}
-                        <a href="{% url 'website:profile' %}" class="{% block profile_active %}{% endblock %}">Profile</a>
+                        <a href="{% url 'website:profile' request.user.username %}" class="buttonLink">Profile</a>
                         <a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %}">New Recipe</a>
                         <a href="{% url 'website:logout' %}">Logout</a>
                             {% if user.profile.picture %}
