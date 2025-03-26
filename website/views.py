@@ -68,17 +68,25 @@ def user_login(request):
                 if next is not None:
                     return redirect(next)
                 else:
-                    return redirect(reverse('website:home'))
+                    return redirect(reverse('website:profile'))
             else:
                 return render(request, 'website/login.html', context = {"error": True, "error_message": "Your account has been disabled."})
         else:
             return render(request, 'website/login.html', context = {"error": True, "error_message": "Incorrect username or password."})
     else:
+        context = {}
+        if 'password_changed' in request.session and request.session['password_changed'] == True:
+            request.session['password_changed'] = False
+            context["error"] = True
+            context["error_message"] = "Password changed successfully. Please log in again."
+
         after_login = request.GET.get('next')
         if after_login is not None:
-            context = {"next": True, "after_login": after_login}
+            context["next"] = True
+            context["after_login"] = after_login
         else:
-            context = {"next": False}
+            context["next"] = False
+
         return render(request, 'website/login.html', context = context)
     
 @login_required
@@ -194,35 +202,50 @@ def edit_recipe(request, recipe_id):
 @login_required
 def edit_profile(request):
     user_profile = request.user.profile  #get profile
+    context = {}
 
     if request.method == 'POST':  
-        profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile) #set profile
         username = request.POST.get("new_username") #new username
         new_password = request.POST.get('new_password') #new password
         old_password = request.POST.get('old_password')
+        bio = request.POST.get('bio')
+        new_picture = request.POST.get('new_picture')
         action = request.POST.get('action')  # Action checker to allow changing only one part
 
-        if action == 'change_username' and username != request.user.username: #check its a different username 
-            if not User.objects.filter(username=username).exists():   #check if username is free
-                request.user.username = username
-                request.user.save()  
-                return redirect('website:profile')
+        if action == 'change_username':
+            if username != request.user.username: #check its a different username 
+                if not User.objects.filter(username=username).exists():   #check if username is free
+                    request.user.username = username
+                    request.user.save()  
+                    return redirect('website:profile')
+                else:
+                    context["username_error"] = True
+                    context["username_error_message"] = "That username is already taken. Please choose another username."
+                    context["badusername"] = username
+            else:
+                context["username_error"] = True
+                context["username_error_message"] = "That is already your username."
+                context["badusername"] = username
     
         elif action == 'change_password':
-            if check_password(old_password, request.user.password):  #Check old password
+            if check_password(old_password, request.user.password): #Check old password
                 request.user.set_password(new_password)  # Set new password
                 request.user.save()
-                return redirect(reverse('website:profile'))
+                request.session['password_changed'] = True
+                return redirect(reverse('website:login'))
+            else:
+                context["password_error"] = True
 
-        elif action == 'save_profile' and profile_form.is_valid():  #Profile Save
-            profile_form.save()
-            return redirect('website:profile')  
+        elif action == 'save_profile':  #Profile Save
+            user_profile.bio = bio
+            if (new_picture == "true"):
+                user_profile.picture = request.FILES["picture"]
+            user_profile.save()  
+            return HttpResponse(reverse('website:profile'), status=201) # Send the profile page URL back to the client
 
-    else:
-        profile_form = UserProfileForm(instance=user_profile)  #Return users data
+    context['user'] = request.user
 
-    return render(request, 'website/edit_profile.html', {'profile_form': profile_form, 'user': request.user,
-    })
+    return render(request, 'website/edit_profile.html', context)
 
 @login_required
 def delete_account(request):

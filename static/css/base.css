@@ -50,7 +50,7 @@ header {
     align-items: center;
 }
 
-#avatar-icon {
+.avatar-icon {
     padding: 0;
     border-radius: 50%;
     border: var(--theme_black) 2px solid;

@@ -51,6 +51,7 @@ async function submitRecipe(e) {
             cropperPreview.scrollIntoView({behavior: 'smooth'});
             cropperPreview.children[2].focus({focusVisible: true});
             cropperPreview.children[3].style.display = "block";
+            return;
         }
         else {
             // Or clear the picture field and try again

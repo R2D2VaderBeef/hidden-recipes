@@ -10,44 +10,76 @@
     active
 {% endblock %}
 
+{% block style_block %}
+    <link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <script src="{% static 'js/edit_profile.js' %}" data-username="{{ user.username }}"></script>
+    <script src="{% static 'js/third-party/cropper.js' %}"></script>
+{% endblock %}
+
 {% block body_block %}
-<h1>Edit Profile</h1>
-<br>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+<div class="edit-block">
+    <h1>Edit Profile</h1>
+    <h2>Change Username</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="new_username">
+            <span class="mini-helptext">Your Current Username: {{ user.username }}</span><br />
+            New Username:
+        </label>
+        {% if username_error %} 
+            <input type="text" name="new_username" value="{{ badusername }}" required>
+            <p class="error">{{ username_error_message }}</p>
+        {% else %}
+            <input type="text" name="new_username" value="{{ user.username }}" required>
+        {% endif %}
+        <button type="submit" name="action" value="change_username">Save Username</button>
+    </form>
+    
+    <hr>
 
-    <p>Your Current Username: {{ user.username }}</p>
-    <br>
-    <label for="new_username"><h4>Change Username:</h4></label>
-    <input type="text" name="new_username" value="{{ user.username }}" required>
-    <button type="submit" name="action" value="change_username">Save Username</button>
+    <h2>Change Password</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="old_password">Old Password</label>
+        <input type="password" name="old_password" required>
+        {% if password_error %}
+            <p class="error">Your Old Password was incorrect.</p>
+        {% endif %}
+        <br>
+        <label for="new_password">New Password</label>
+        <input type="password" name="new_password" required>
+        <button type="submit" name="action" value="change_password">Change Password</button>
+    </form>
 
     <hr>
 
+    <h2>Profile Details</h2>
+    <form id="profileForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Profile Picture</label>
+        {% if user.profile.picture %}
+            <p>Currently:</p>
+            <img class="finished-picture" src="{{ user.profile.picture.url }}" alt="{{ user }}'s Profile Picture">      
+            <label for="picture">Change:</label>
+        {% else %}
+        <label for="picture">Set:</label>
+        {% endif %}
 
-    <h4>Change Password</h4>
-    <p> Old Password</p>
-    <input type="password" name="old_password" required>
-    <br>
-    <P> New Password</P>
-    <input type="password" name="new_password" required>
-    <button type="submit" name="action" value="change_password">Change Password</button>
-</form>
+        <input type="file" id="profilePicture" name="picture" accept="image/*" />
+        <div id="cropper-help">
+            <p>Scroll / pinch to zoom, drag to move the selection.</p>
+        </div>
+        <div id="cropper-container"></div>
+        <div id="cropper-output"></div>
+
+        <label for="bio">Bio</label>
+        <textarea name="bio" id="bio">{{ user.profile.bio }}</textarea>
+        <button type="submit">Save Profile</button>
+    </form>
 
     <hr>
 
-<form method="post" enctype="multipart/form-data">
-    <h4>Profile Details</h4>
-    {% csrf_token %}
-    {{ profile_form.as_p }}
-    <button type="submit" name="action" value="save_profile">Save Profile</button>
-
-    <hr>
-
-
-</form>
-
-
-
-<a href="{% url 'website:delete_account' %}">Delete Account</a>
+    <a class="buttonLink delete" href="{% url 'website:delete_account' %}">Delete Account</a>
+</div>
 {% endblock %}
