@@ -38,9 +38,10 @@ header {
     height: 2.5em;
 }
 
-#start {
+#start a {
     font-size: 2em;
     color: var(--theme_yellow);
+    text-decoration: none;
 }
 
 #centre,
@@ -49,7 +50,7 @@ header {
     align-items: center;
 }
 
-#avatar-icon {
+.avatar-icon {
     padding: 0;
     border-radius: 50%;
     border: var(--theme_black) 2px solid;
@@ -123,7 +124,7 @@ header {
         height: auto;
     }
 
-    #start {
+    #start a {
         font-size: 1.5em;
         margin-bottom: 10px;
     }

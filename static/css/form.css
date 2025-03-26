@@ -22,10 +22,13 @@ input:hover, input:focus, textarea:hover, textarea:focus, .multiselect-dropdown:
 }
 
 input[type=submit], form button {
+    transition-duration: 0s;
+}
+
+input[type=submit], form button:not(.buttonLink) {
     background-color: var(--theme_black);
     color: var(--theme_yellow);
     font-weight: 600;
-    transition-duration: 0s;
 }
 
 input[type=submit]:hover, input[type=submit]:focus, form button:hover, form button:focus {
