@@ -158,6 +158,36 @@ class DeleteAccountTest(TestCase):
         response = self.client.get(reverse('website:profile', args=['testuser']))  
         self.assertEqual(response.status_code, 404)
         
-        
+class LikeRecipeTest(TestCase):
+    def setUp(self):
+        self.client=Client()
+        self.user = User.objects.create_user(username='testuser', password='testuser')
+        self.recipe = Recipe.objects.create(
+            title="Test Recipe",
+            description="Test description",
+            poster=self.user,
+            date=timezone.now()
+        )
+        self.like_url = reverse('website:like_recipe', args=[self.recipe.id])
 
         
+    def test_authenticated_user_can_like_recipe(self):
+        self.client.login(username='testuser', password='testuser')
+        response = self.client.post(self.like_url)
+        self.recipe.refresh_from_db() 
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(self.user in self.recipe.likes.all()) 
+        self.assertJSONEqual(response.content, {"liked": True, "likes_count": 1})
+
+    def test_authenticated_user_can_unlike_recipe(self):
+        self.client.login(username='testuser', password='testuser')
+        self.recipe.likes.add(self.user)
+        response = self.client.post(self.like_url)
+        self.recipe.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(self.user in self.recipe.likes.all()) 
+        self.assertJSONEqual(response.content, {"liked": False, "likes_count": 0})
+
+    def test_unauthenticated_user_cannot_like_recipe(self):
+        response = self.client.post(self.like_url)
+        self.assertEqual(response.status_code, 302)  
