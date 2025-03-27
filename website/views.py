@@ -68,7 +68,8 @@ def user_login(request):
                 if next is not None:
                     return redirect(next)
                 else:
-                    return redirect(reverse('website:profile'))
+                    return redirect('website:profile', username=user.username)
+
             else:
                 return render(request, 'website/login.html', context = {"error": True, "error_message": "Your account has been disabled."})
         else:
@@ -94,53 +95,50 @@ def user_logout(request):
     logout(request)
     return redirect(reverse('website:home'))
 
-@login_required
-def profile(request):
-    user_profile = request.user.profile
+# website/views.py
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from .models import Recipe
 
-    user_recipes_queryset = Recipe.objects.filter(poster=request.user).order_by('-date')
-    paginator = Paginator(user_recipes_queryset, 6) 
+def profile(request, username):
+    user_obj = get_object_or_404(User, username=username)
+    is_own_profile = request.user == user_obj
+
+    recipes_queryset = Recipe.objects.filter(poster=user_obj).order_by('-date')
+    paginator = Paginator(recipes_queryset, 6)
     page_number = request.GET.get('page')
-
-    try:
-        user_recipes = paginator.page(page_number)
-    except PageNotAnInteger:
-        user_recipes = paginator.page(1)
-    except EmptyPage:
-        user_recipes = paginator.page(paginator.num_pages)
-    
-    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
+    user_recipes = paginator.get_page(page_number)
+    total_likes = sum(recipe.likes.count() for recipe in recipes_queryset)
 
     return render(request, 'website/profile.html', {
-        'user_profile': user_profile,
+        'user_profile': user_obj.profile,
         'user_recipes': user_recipes,
         'total_likes': total_likes,
-
+        'is_own_profile': is_own_profile,
+        'liked_page': False,
     })
 
 
-@login_required
-def liked_recipes(request):
-    user_profile = request.user.profile
-    user_recipes_queryset = Recipe.objects.filter(poster=request.user).order_by('-date')
-    total_likes = sum(recipe.likes.count() for recipe in user_recipes_queryset)
+def profile_liked(request, username):
+    user_obj = get_object_or_404(User, username=username)
+    is_own_profile = request.user == user_obj
 
-    liked_recipes_queryset = request.user.liked_recipes.all().order_by('-date')
-    paginator = Paginator(liked_recipes_queryset, 6)
+    liked_queryset = user_obj.liked_recipes.all().order_by('-date')
+    paginator = Paginator(liked_queryset, 6)
     page_number = request.GET.get('page')
-    user_recipes = user_recipes_queryset.count
-    try:
-        liked_recipes = paginator.page(page_number)
-    except PageNotAnInteger:
-        liked_recipes = paginator.page(1)
-    except EmptyPage:
-        liked_recipes = paginator.page(paginator.num_pages)
+    liked_recipes = paginator.get_page(page_number)
+    created_recipe_count = Recipe.objects.filter(poster=user_obj).count()
+
+    total_likes = sum(recipe.likes.count() for recipe in Recipe.objects.filter(poster=user_obj))
 
     return render(request, 'website/liked.html', {
-        'user_profile': user_profile,
+        'user_profile': user_obj.profile,
         'liked_recipes': liked_recipes,
-        'user_recipes': user_recipes,
         'total_likes': total_likes,
+        'is_own_profile': is_own_profile,
+        'liked_page': True,
+        'created_recipe_count': created_recipe_count,  
     })
 
 
@@ -192,7 +190,7 @@ def edit_recipe(request, recipe_id):
         form = RecipeForm(request.POST, instance=recipe)
         if form.is_valid():
             form.save()  
-            return redirect('website:profile')  
+            return redirect('website:profile', username=request.user.username)
     else:
         form = RecipeForm(instance=recipe)
 
@@ -217,7 +215,7 @@ def edit_profile(request):
                 if not User.objects.filter(username=username).exists():   #check if username is free
                     request.user.username = username
                     request.user.save()  
-                    return redirect('website:profile')
+                    return redirect('website:profile', username=username)
                 else:
                     context["username_error"] = True
                     context["username_error_message"] = "That username is already taken. Please choose another username."
@@ -241,7 +239,7 @@ def edit_profile(request):
             if (new_picture == "true"):
                 user_profile.picture = request.FILES["picture"]
             user_profile.save()  
-            return HttpResponse(reverse('website:profile'), status=201) # Send the profile page URL back to the client
+            return HttpResponse(reverse('website:profile', kwargs={'username': request.user.username}), status=201)
 
     context['user'] = request.user
 
