@@ -44,11 +44,11 @@
     <div class="page-switcher">
         <a href="{% url 'website:profile' user_profile.user.username %}" class="btn buttonLink {% if not liked_page %}active{% endif %}">Posts</a>
         <a href="{% url 'website:liked_recipes' user_profile.user.username %}" class="btn buttonLink {% if liked_page %}active{% endif %}">Liked</a>
-
-        <h3>Showing {{ user_recipes|length }} out of {{ user_recipes.paginator.count }} recipes</h3>
-    </div>
     
     {% if user_recipes %}
+        <h3>Showing {{ user_recipes|length }} of {{ user_recipes.paginator.count }} recipes</h3>
+    </div>
+
     <section class="recipes">
         {% for recipe in user_recipes %}
             <article class="recipe-card">
@@ -110,7 +110,11 @@
     </div>
 
     {% else %}
-    <p>You have not created any recipes yet.</p>
+        <h3>This user has no recipes.</h3>
+        {% if is_own_profile %}
+            <a href="{% url 'website:create_recipe' %}">Create your first one!</a>
+        {% endif %}
+    </div>
     {% endif %}
 
 {% endblock %}

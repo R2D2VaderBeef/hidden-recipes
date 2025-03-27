@@ -45,10 +45,10 @@
         <a href="{% url 'website:profile' user_profile.user.username %}" class="btn buttonLink">Posts</a>
         <a href="{% url 'website:liked_recipes' user_profile.user.username %}" class="btn buttonLink active">Liked</a>
 
-        <h3>Showing {{ liked_recipes|length }} out of {{ liked_recipes.paginator.count }} liked recipes</h3>
+    {% if liked_recipes %}
+        <h3>Showing {{ liked_recipes|length }} of {{ liked_recipes.paginator.count }} liked recipes</h3>
     </div>
 
-    {% if liked_recipes %}
     <section class="recipes">
         {% for recipe in liked_recipes %}
             <article class="recipe-card">
@@ -109,6 +109,10 @@
     </div>
 
     {% else %}
-    <p>You have not liked any recipes yet.</p>
+        <h3>This user has no liked recipes.</h3>
+        {% if is_own_profile %}
+            <a href="{% url 'website:home' %}">Discover a recipe you might like!</a>
+        {% endif %}
+    </div>
     {% endif %}
 {% endblock %}
