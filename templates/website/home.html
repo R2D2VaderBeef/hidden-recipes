@@ -17,7 +17,9 @@ active
 {% block body_block %}
 <section class="recipes">
 
-    <h3>Showing {{ recipes|length }} of {{ recipes.paginator.count }} recipes</h3>
+    <div class="num-pages">
+        <h3>Showing {{ recipes|length }} of {{ recipes.paginator.count }} recipes</h3>
+    </div>
 
     {% for recipe in recipes %}
     
@@ -62,7 +64,9 @@ active
         </div>
     </article>
     {% empty %}
-        <p>No recipes available yet. Be the first to add one!</p>
+        <div class="num-pages">
+            <h3>No recipes available yet. Be the first to add one!</h3>
+        </div>
     {% endfor %}
 </section>
 

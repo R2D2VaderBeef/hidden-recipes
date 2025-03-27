@@ -6,8 +6,13 @@
 {% endblock %}
 
 {% block style_block %}
+    <script src="{% static 'js/tags.js' %}" data-tags="{{ tags }}"></script>
+    <script src="{% static 'js/third-party/multiselect-dropdown.js' %}"></script>
+
     <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
     <link rel="stylesheet" href="{% static 'css/pagination.css' %}">
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tags.css' %}">
 {% endblock %}
 
 {% block tags_active %}
@@ -16,25 +21,25 @@ active
 
 {% block body_block %}
 
-    <link rel="stylesheet" href="{% static 'css/form.css' %}">
-    <h1>Hidden recipes</h1>
-    <div>
-        here is the tags page.<br />
-        <strong>{{ boldmessage }}</strong><br />
+    <div class="tags-block">
+        <h1>Tags</h1>
+        <p>Find the perfect recipe by filtering by tags below.</p>
+
+        <!-- Search Form -->
+        <select name="tags" id="tags" multiple multiselect-search="true" multiselect-max-items="100"></select>
+        <form id="tagForm" action="{% url 'website:tags' %}">
+            <input type="text" name="tags" id="realtags" hidden>
+            <button type="submit">Search</button>
+        </form>
     </div>
-
-
-    <!-- Search Form -->
-    <form method="GET" action="{% url 'website:tags' %}">
-        <input type="text" name="tags" value="{{ query }}" placeholder="Search by tag..." />
-        <button type="submit">Search</button>
-    </form>
 
     <!-- Recipe List -->
     <section class="recipes">
         {% if recipes %}
-      
+            
+        <div class="num-pages">
             <h3>Showing {{ recipes|length }} of {{ recipes.paginator.count }} recipes</h3>
+        </div>
 
             {% for recipe in recipes %}
                 <article class="recipe-card">
@@ -75,14 +80,16 @@ active
                 </article>
             {% endfor %}
         {% else %}
-            <p>No recipes found for this tag.</p>
+            <div class="num-pages">
+                <h3>No recipes found for the selected tag(s).</h3>
+            </div>
         {% endif %}
     </section>
 
     <div class="pagination">
         {% if recipes.has_previous %}
-            <a href="?q={{ query }}&page=1" class="btn buttonLink">First</a>
-            <a href="?q={{ query }}&page={{ recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
+            <a href="?tags={{ query }}&page=1" class="btn buttonLink">First</a>
+            <a href="?tags={{ query }}&page={{ recipes.previous_page_number }}" class="btn buttonLink">Previous</a>
         {% else %}
             <a class="btn buttonLink" role="link" aria-disabled="true">First</a>
             <a class="btn buttonLink" role="link" aria-disabled="true">Previous</a>
@@ -91,8 +98,8 @@ active
         <span>Page {{ recipes.number }} of {{ recipes.paginator.num_pages }}</span>
 
         {% if recipes.has_next %}
-            <a href="?q={{ query }}&page={{ recipes.next_page_number }}" class="btn buttonLink">Next</a>
-            <a href="?q={{ query }}&page={{ recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
+            <a href="?tags={{ query }}&page={{ recipes.next_page_number }}" class="btn buttonLink">Next</a>
+            <a href="?tags={{ query }}&page={{ recipes.paginator.num_pages }}" class="btn buttonLink">Last</a>
         {% else %}
             <a class="btn buttonLink" role="link" aria-disabled="true">Next</a>
             <a class="btn buttonLink" role="link" aria-disabled="true">Last</a>

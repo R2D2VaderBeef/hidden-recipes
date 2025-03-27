@@ -25,12 +25,6 @@ def home(request):
 
     return render(request, 'website/home.html', {'recipes': recipes})
 
-def tags(request):
-    return render(request, 'website/tags.html')
-
-def recipe_view(request):
-    return render(request, 'website/recipe_view.html')
-
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -147,7 +141,9 @@ def tags_view(request):
     recipes = Recipe.objects.all().order_by('-date') 
 
     if query:
-        recipes = recipes.filter(tags__name__icontains=query)  # Filter recipes by tag name
+        tags = query.split("|")
+        for tag in tags:
+            recipes = recipes.filter(tags__name__icontains=tag)  # Filter recipes by tag name
 
     paginator = Paginator(recipes, 6)  
     page_number = request.GET.get('page')
@@ -156,6 +152,7 @@ def tags_view(request):
     context = {
         'recipes': page_obj,
         'query': query,
+        'tags': serializers.serialize("json", Tag.objects.all())
     }
     return render(request, 'website/tags.html', context)
 
