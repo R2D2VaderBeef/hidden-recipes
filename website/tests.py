@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from .models import UserProfile, Tag, Recipe, Comment
 from .forms import UserForm, RecipeForm, CommentForm
 from django.utils import timezone
+from django.contrib.auth import get_user_model
+
 
 class ModelTests(TestCase):
     def setUp(self):
@@ -92,13 +94,70 @@ class ViewTests(TestCase):
         self.assertTemplateUsed(response, 'website/recipe_view.html')
     
     def test_view_nonexistent_recipe(self):
-        response = self.client.get(reverse('website:view_recipe', args=[9999]))
+        response = self.client.get(reverse('website:view_recipe', args=[100]))
         self.assertEqual(response.status_code, 404)
     
     def test_create_recipe_authenticated(self):
         self.client.login(username='testuser', password='testuser')
-        response = self.client.get(reverse('website:create_recipe'))
+        response = self.client.get(reverse('website:create_recipe'),{
+            'title': 'Recipe',
+            'description': 'A very nice recipe',
+            'ingredients': 'Water, Cheese, Salt',
+            'instructions': 'Mix all ingredients then cook',
+        })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'website/create_recipe.html')
 
+class LoginTests(TestCase):
 
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testuser')
+
+    def test_login_functionality(self):
+        profile = UserProfile.objects.create(user=self.user)
+        response = self.client.post(reverse('website:login'),{'username':'testuser', 'password':'testuser'})
+        self.assertEqual(response.status_code,302)
+        self.assertEqual(profile.user.username, 'testuser')
+        self.assertEqual(response.url,reverse('website:profile', args=['testuser']))
+
+class LogoutTests(TestCase):
+    def test_logging_out_user(self):
+        self.user = User.objects.create_user(username='testuser', password='testuser')
+        self.client.login(username='testuser',password='testuser')
+
+        try:
+            
+            self.assertEqual(self.user.id,int(self.client.session['_auth_user_id']))
+        except KeyError:
+            self.assertTrue(False, f"{FAILURE_HEADER}Failed when attempting to log user in {FAILURE_FOOTER}")
+        response = self.client.get(reverse('website:logout'))
+        self.assertEqual(response.status_code,302)
+        self.assertEqual(response.url,reverse('website:home'))                          
+        
+
+    def test_logging_out_when_alreday_logged_out(self):
+        response = self.client.get(reverse('website:logout'))
+        self.assertTrue(response.status_code,302)
+        self.assertTrue(response.url,reverse('website:login'))
+
+class DeleteAccountTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser',password='testuser')
+        self.delete_url = reverse('website:delete_account')
+
+    def test_delete_accout(self):
+        self.client.login(username='testuser',password='testuser')
+        response = self.client.post(self.delete_url)
+        self.assertRedirects(response,reverse('website:home'))
+        with self.assertRaises(get_user_model().DoesNotExist):
+            User.objects.get(username='testuser')
+
+    def test_user_logged_out_after_deletion(self):
+        self.client.login(username='testuser',password='testuser')
+        response = self.client.post(self.delete_url)        
+        response = self.client.get(reverse('website:profile', args=['testuser']))  
+        self.assertEqual(response.status_code, 404)
+        
+        
+
+        
