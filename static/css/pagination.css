@@ -34,9 +34,5 @@
 
 .num-pages {
     max-width: 70rem;
-    margin: auto;
-}
-
-.num-pages h3 {
-    margin: 1em 0;
+    margin: 1em auto;
 }
