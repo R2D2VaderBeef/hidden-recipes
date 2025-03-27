@@ -8,7 +8,7 @@ from django.core import serializers
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from website.forms import UserForm, RecipeForm, CommentForm
+from website.forms import UserForm, CommentForm
 from .models import User, Tag, Recipe, UserProfile, Comment
 
 def home(request):
