@@ -8,7 +8,7 @@ from django.core import serializers
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from website.forms import UserForm, RecipeForm, CommentForm
+from website.forms import UserForm, CommentForm
 from .models import User, Tag, Recipe, UserProfile, Comment
 
 def home(request):
@@ -87,12 +87,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect(reverse('website:home'))
-
-# website/views.py
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import User
-from django.core.paginator import Paginator
-from .models import Recipe
 
 def profile(request, username):
     user_obj = get_object_or_404(User, username=username)
