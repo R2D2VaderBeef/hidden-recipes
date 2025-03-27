@@ -44,6 +44,11 @@ def populate():
             "username": "toorteebteai",
             "bio": "Food Purist and personal trainer. I post only the highest-quality healthy recipes!",
             "picture": "evilbean.png"
+        },
+        {
+            "username": "holly",
+            "bio": "",
+            "picture": "default"
         }]
 
     print("Adding Users")
@@ -71,6 +76,7 @@ def populate():
                 Add two spoons of yoghurt and the tomatoes. Cover the pan with a lid, turn the heat down and cook for 20 minutes.
                 Chop a bunch of coriander after cutting off the base. After the 20 minutes, add the coriander, stir and cook for 10 more minutes.""",
             "tags": ["Indian", "Chicken", "Garlic", "Onion", "Tomato", "Yoghurt", "Spices"],
+            "likes": [],
             "picture": "chickencurry.png"
         },
         {
@@ -92,6 +98,7 @@ def populate():
             Add your veggies back to the pan, stir well and fry for a minute or two more.
             Serve in tortilla wraps with your choice of toppings!""",
             "tags": ["Mexican", "American", "Chicken", "Onion", "Peppers"],
+            "likes": [],
             "picture": "fajitas.png"
         },
         {
@@ -122,6 +129,7 @@ def populate():
             Add back the chicken, turn down the heat, put on the lid, and cook for 5 minutes.
             Increase the heat again. Stir up the sauce to redistribute the cornflour, then pour into the wok. Stir until the sauce thickens.""",
             "tags": ["Chinese", "Chicken", "Peppers", "Onion", "Soy Sauce", "Nuts"],
+            "likes": ["foodlover99"],
             "picture": "cashewchicken.png"
         },
         {
@@ -137,6 +145,7 @@ def populate():
             You can even heat up your taco shells in the microwave! Put them open-end-down on a plate and microwave for 60 seconds.
             Load up your taco shells with taco meat and some delicious toppings. Enjoy!""",
             "tags": ["Mexican", "American", "Beef", "Lettuce"],
+            "likes": ["holly", "toorteebteai"],
             "picture": "tacos.png"
         },
         {
@@ -168,6 +177,7 @@ def populate():
             Add the sauce and the corn slurry into the pan. Stir and fry on a medium heat till the sauce begins to thicken.
             Add the paneer back to the pan and mix well. Fry for a few minutes more.""",
             "tags": ["Indian", "Cheese", "Garlic", "Onion", "Peppers", "Soy Sauce"],
+            "likes": ["toorteebteai", "holly"],
             "picture": "paneer.png"
         },
         ]
@@ -204,6 +214,9 @@ def add_recipe(recipe_info):
     for tag in recipe_info["tags"]:
         recipe.tags.add(Tag.objects.get(name=tag))
 
+    for user in recipe_info["likes"]:
+        recipe.likes.add(User.objects.get(username=user))
+
 def add_comment(comment_info):
     comment = Comment.objects.get_or_create(poster=User.objects.get(username=comment_info["username"]), recipe=Recipe.objects.get(title=comment_info["recipe"]), text=comment_info["text"])[0]
     comment.save()
@@ -214,8 +227,10 @@ def add_user(user):
     user_obj.save()
 
     profile = UserProfile.objects.get_or_create(user=user_obj)[0]
-    profile.bio = user["bio"]
-    profile.picture = "populate_assets/" + user["picture"]
+    if user["bio"] != "":
+        profile.bio = user["bio"]
+    if user["picture"] != "default":
+        profile.picture = "populate_assets/" + user["picture"]
     profile.save()
 
 
