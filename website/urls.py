@@ -20,3 +20,4 @@ path('like/<int:recipe_id>/', views.like_recipe, name='like_recipe'),
 path('delete-comment/<int:comment_id>/',views.delete_comment,name='delete_comment'),
 path('delete-recipe/<int:recipe_id>/', views.delete_recipe, name='delete_recipe'),
 ]
+
