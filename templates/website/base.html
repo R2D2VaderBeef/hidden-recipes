@@ -13,6 +13,7 @@
             - Hidden Recipes
         </title>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <script src="{% static 'js/navbar.js' %}"></script>
         {% block style_block %}
         {% endblock %}
     </head>
@@ -20,33 +21,35 @@
     <body>
         <header>
             <div id="start"><a href="{% url 'website:home' %}">Hidden Recipes</a></div>
-            <div id="centre">
-                <div class="dropdown">
-                    <button class="dropbtn">Recipes</button>
-                    <div class="dropdown-content">
-                        <a href="{% url 'website:home' %}" class="{% block discover_active %}{% endblock %}">Discover</a>
-                        <a href="{% url 'website:tags' %}" class="{% block tags_active %}{% endblock %}">Tags</a>
+            <div id="mobile-container">
+                <div id="centre">
+                    <div class="dropdown">
+                        <button class="dropbtn" id="recipesDropdownButton" onclick="showDropdown('recipesDropdown')">Recipes</button>
+                        <div class="dropdown-content" id="recipesDropdown">
+                            <a href="{% url 'website:home' %}" class="{% block discover_active %}{% endblock %}">Discover</a>
+                            <a href="{% url 'website:tags' %}" class="{% block tags_active %}{% endblock %}">Tags</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-           <div id="end">
-                <div class="dropdown">
-                    <button class="dropbtn">Account</button>
-                    <div class="dropdown-content">
-                        {% if user.is_authenticated %}
-                        <a href="{% url 'website:profile' request.user.username %}" class="buttonLink">Profile</a>
-                        <a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %}">New Recipe</a>
-                        <a href="{% url 'website:logout' %}">Logout</a>
-                            {% if user.profile.picture %}
-                                <img class="avatar-icon" src="{{ user.profile.picture.url }}" alt="{{ user }}'s Profile Picture">
+               <div id="end">
+                    <div class="dropdown">
+                        <button class="dropbtn" id="accountDropdownButton" onclick="showDropdown('accountDropdown')">Account</button>
+                        <div class="dropdown-content" id="accountDropdown">
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'website:profile' request.user.username %}" class="{% block profile_active %}{% endblock %}">Profile</a>
+                            <a href="{% url 'website:create_recipe' %}" class="{% block create_active %}{% endblock %}">New Recipe</a>
+                            <a href="{% url 'website:logout' %}">Logout</a>
+                                {% if user.profile.picture %}
+                                    <img class="avatar-icon" src="{{ user.profile.picture.url }}" alt="{{ user }}'s Profile Picture">
+                                {% else %}
+                                    <img class="avatar-icon" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
+                                {% endif %}
                             {% else %}
-                                <img class="avatar-icon" src="{{ MEDIA_URL }}defaults/default_profile.png" alt="Default Profile Picture">
+                            <a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %}">Register</a>
+                            <a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %}">Log In</a>
+                            <img class="avatar-icon" src="{% static 'img/user_yellow.png' %}" alt="">
                             {% endif %}
-                        {% else %}
-                        <a href="{% url 'website:register' %}" class="{% block signup_active %}{% endblock %}">Register</a>
-                        <a href="{% url 'website:login' %}" class="{% block login_active %}{% endblock %}">Log In</a>
-                        <img class="avatar-icon" src="{% static 'img/user_yellow.png' %}" alt="">
-                        {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
