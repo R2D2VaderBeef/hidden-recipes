@@ -23,16 +23,6 @@ class UserForm(forms.ModelForm):
             },
         }
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ('picture', 'bio')
-
-    def save(self, commit=True):
-        if not self.cleaned_data.get('picture'):
-            self.instance.picture = 'defaults/default_profile.png'
-        return super().save(commit=commit)
-
 class RecipeForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
 

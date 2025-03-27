@@ -226,7 +226,6 @@ function MultiselectDropdown(options){
     
     div.addEventListener('focusout', function(event) {
       if (div.contains(event.target) && event.relatedTarget == null && event.target.tagName == "INPUT" && event.target.type == "checkbox") {
-        console.log(event);
         event.target.click();
       }
       else if (!div.contains(event.relatedTarget)) {

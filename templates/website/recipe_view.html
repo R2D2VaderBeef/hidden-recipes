@@ -104,10 +104,11 @@
 
             <span class="rcp-author bigger">Write a comment</span>
         </div>
-        <form method="post">
+        <form id="commentForm" method="post">
             {% csrf_token %}
             {{ form.as_p}}
             <button type="submit">Post Comment</button>
+            <p class="shortcut">Ctrl / ⌘ + Enter to post.</p>
         </form>
     {% else %}
         <p><a href="{% url 'website:login' %}">Log in</a> to post a comment.</p>
