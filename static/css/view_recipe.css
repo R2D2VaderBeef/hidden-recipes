@@ -125,3 +125,8 @@
 .rcp-author.bigger {
     font-size: 1.1em;
 }
+
+.shortcut {
+    font-size: 0.9em;
+    padding-bottom: 0.5em;
+}

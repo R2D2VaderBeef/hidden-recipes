@@ -170,6 +170,10 @@ select {
     #recipeForm input[type="submit"] {
         width: 100%;
     }
+
+    .single-ingredient input, #add-ingredient {
+        width: 70%;
+    }
 }
 
 @media (max-width: 968px) {
@@ -196,6 +200,6 @@ select {
     }
 }
 
-#cropper-output canvas {
+#cropper-output canvas, .old-picture {
     max-width: 100%;
 }

@@ -10,7 +10,8 @@ active
 {% endblock %}
 
 {% block style_block %}
-    <script src="{% static 'js/create_recipe.js' %}" data-tags="{{ tags }}" data-redirect="{% url 'website:view_recipe' 0 %}" data-handle="{% static 'img/handle.svg' %}"></script>
+    <script src="{% static 'js/create_recipe.js' %}"></script>
+    <script src="{% static 'js/common_recipe_editor.js' %}" data-tags="{{ tags }}" data-handle="{% static 'img/handle.svg' %}"></script>
     <script src="{% static 'js/third-party/Sortable.js' %}"></script>
     <script src="{% static 'js/third-party/multiselect-dropdown.js' %}"></script>
     <script src="{% static 'js/third-party/cropper.js' %}"></script>

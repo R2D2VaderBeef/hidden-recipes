@@ -8,9 +8,8 @@ from django.core import serializers
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from website.forms import UserForm, UserProfileForm
+from website.forms import UserForm, RecipeForm, CommentForm
 from .models import User, Tag, Recipe, UserProfile, Comment
-from .forms import RecipeForm, CommentForm
 
 def home(request):
     recipes = Recipe.objects.all().order_by('-date') 
@@ -171,27 +170,48 @@ def create_recipe(request):
         for tag in tags:
             if tag == "":
                 continue
-            
             else:
                 recipe.tags.add(Tag.objects.get(pk=int(tag)))
 
-        return HttpResponse(recipe.pk) # We need the client side to redirect to the new recipe page
+        return HttpResponse(reverse('website:view_recipe', kwargs={'recipe_id': recipe.pk}), status=201)  # return the recipe page url
 
     return render(request, 'website/create_recipe.html', {'tags': serializers.serialize("json", Tag.objects.all())})
 
 @login_required
 def edit_recipe(request, recipe_id):
-    recipe = Recipe.objects.get(id=recipe_id, poster_id=request.user)
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    print(recipe.instructions.split("\n"))
+    if (recipe.poster != request.user):
+        return redirect(reverse('website:view_recipe', kwargs={'recipe_id': recipe_id}), status=401)
 
     if request.method == 'POST':
-        form = RecipeForm(request.POST, instance=recipe)
-        if form.is_valid():
-            form.save()  
-            return redirect('website:profile', username=request.user.username)
-    else:
-        form = RecipeForm(instance=recipe)
+        newTitle = request.POST["title"][0:128]
+        newDescription = request.POST["description"][0:512]
 
-    return render(request, 'website/edit_recipe.html', {'form': form, 'recipe': recipe})
+        recipe.title = newTitle
+        recipe.description=newDescription
+        recipe.ingredients=request.POST["ingredients"]
+        recipe.instructions=request.POST["instructions"]
+        if (len(request.FILES) > 0):
+            recipe.picture=request.FILES["picture"]
+        
+        recipe.save()
+        
+        tags = request.POST["tags"].split(",")
+        for tag in tags:
+            if tag == "":
+                continue
+            else:
+                recipe.tags.add(Tag.objects.get(pk=int(tag)))
+
+        return HttpResponse(reverse('website:view_recipe', kwargs={'recipe_id': recipe_id}), status=201) # return the recipe page url
+
+    return render(request, 'website/edit_recipe.html', 
+                  {'recipe': recipe, 
+                   'tags': serializers.serialize("json", Tag.objects.all()), 
+                   'ingredients': recipe.ingredients.split("\n"),
+                   'instructions': recipe.instructions.split("\n"),
+                   'recipetags': serializers.serialize("json", recipe.tags.all())})
 
   
 @login_required

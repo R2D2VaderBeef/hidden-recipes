@@ -1,10 +1,19 @@
 function addTags() {
     let tags = JSON.parse(data.tags);
+    let recipeTags = JSON.parse(data.recipetags);
+    let selected = []
+    for (let i = 0; i < recipeTags.length; i++) {
+        selected.push(recipeTags[i].pk)
+    }
+
     let select = document.getElementById("tags");
     for (let i = 0; i < tags.length; i++) {
         let option = document.createElement("option");
         option.value = tags[i].pk;
         option.textContent = tags[i].fields.name;
+        if (selected.includes(tags[i].pk)) {
+            option.selected = true;
+        }
         select.appendChild(option);
     }
 }
@@ -26,7 +35,7 @@ async function submitRecipe(e) {
         file = new File([blob], `${title.replace(/[^a-zA-Z0-9]/g, '')}.png`, { type: 'image/png' });
     }
     else {
-        // We are missing a picture. Let's show the crop dialog if they haven't cropped yet
+        // Show the crop dialog if they haven't cropped yet
         let cropperPreview = document.getElementById("previewContainer");
         if (cropperPreview) {
             cropperPreview.scrollIntoView({behavior: 'smooth'});
@@ -34,13 +43,7 @@ async function submitRecipe(e) {
             cropperPreview.children[3].style.display = "block";
             return;
         }
-        else {
-            // Or clear the picture field and try again
-            let pictureIn = document.getElementById("recipePicture")
-            pictureIn.value = "";
-            pictureIn.focus({focusVisible: true})
-            return document.getElementById("recipeForm").reportValidity()
-        }   
+        // Otherwise do nothing as they dont want to update the picture
     }
 
     let addedIngredients = document.getElementById("ingredients-container").children;
@@ -67,14 +70,15 @@ async function submitRecipe(e) {
         return document.getElementById("recipeForm").reportValidity()
     }
 
-    // Construct and send a form request Django can hopefully understand
     let formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("ingredients", ingredients.join("\n"));
     formData.append("instructions", instructions.join("\n"));
     formData.append("tags", tags.join(","));
-    formData.append("picture", file);
+    if (file != null) {
+        formData.append("picture", file);
+    }
     formData.append("csrfmiddlewaretoken", document.getElementById("recipeForm").children[0].value)
 
     const response = await fetch(".", {
