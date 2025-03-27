@@ -191,3 +191,67 @@ class LikeRecipeTest(TestCase):
     def test_unauthenticated_user_cannot_like_recipe(self):
         response = self.client.post(self.like_url)
         self.assertEqual(response.status_code, 302)  
+
+class EditProfileTest(TestCase):
+     def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testuser')
+        self.profile = UserProfile.objects.create(user=self.user, bio="Test bio")
+        self.client.login(username='testuser', password='testuser')
+        self.edit_url = reverse('website:edit_profile')
+
+     def test_change_username_successfully(self):
+        response = self.client.post(self.edit_url, {
+            'new_username': 'newuser',
+            'action': 'change_username'
+        })
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, 'newuser')
+        self.assertRedirects(response, reverse('website:profile', kwargs={'username': 'newuser'}))
+
+     def test_change_password_successfully(self):
+        response = self.client.post(self.edit_url, {
+            'old_password': 'testuser',
+            'new_password': 'newtestuser',
+            'action': 'change_password'
+        })
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('newtestuser'))
+        self.assertRedirects(response, reverse('website:login'))
+
+     def test_update_bio_successfully(self):
+        response = self.client.post(self.edit_url, {
+            'bio': 'new bio',
+            'action': 'save_profile'
+        })
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.bio, 'new bio')
+        self.assertEqual(response.status_code, 201)
+
+class EditRecipeTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testuser')
+        self.recipe = Recipe.objects.create(
+            poster=self.user,
+            title='original Title',
+            description='original Description',
+            ingredients='original Ingredient1',
+            instructions='original step',
+            date = timezone.now()
+        )
+        self.client.login(username='testuser', password='testuser')
+        self.edit_url = reverse('website:edit_recipe', kwargs={'recipe_id': self.recipe.id})
+
+    def test_edit_recipe_successfully(self):
+        response = self.client.post(self.edit_url, {
+            'title': 'new Title',
+            'description': 'new Description',
+            'ingredients': 'new Ingredient',
+            'instructions': 'new Step',
+            'tags': ''
+        })
+        self.recipe.refresh_from_db()
+        self.assertEqual(self.recipe.title, 'new Title')
+        self.assertEqual(self.recipe.description, 'new Description')
+        self.assertEqual(response.status_code, 201)
+     
+
