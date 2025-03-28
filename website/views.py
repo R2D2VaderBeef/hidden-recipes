@@ -303,6 +303,7 @@ def view_recipe(request, recipe_id):
     context = {'recipe': recipe, 'ingredients': ingredients, 'instructions': instructions, 'comments': comments, 'form': form, 'comment_count': comment_count}
     return render(request, 'website/recipe_view.html', context)
 
+@login_required
 def delete_comment(request,comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if comment.poster == request.user:
