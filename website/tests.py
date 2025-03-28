@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import UserProfile, Tag, Recipe, Comment
-from .forms import UserForm
+from .forms import UserForm, CommentForm
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 
@@ -178,6 +178,69 @@ class LikeRecipeTest(TestCase):
     def test_unauthenticated_user_cannot_like_recipe(self):
         response = self.client.post(self.like_url)
         self.assertEqual(response.status_code, 302)  
+    
+class CommentTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testuser')
+        User.objects.create_user(username='hacker', password='hacker')
+        self.recipe = Recipe.objects.create(
+            title="Test Recipe",
+            description="Test description",
+            poster=self.user,
+            date=timezone.now()
+        )
+        self.comment_url = reverse('website:view_recipe', kwargs={'recipe_id': self.recipe.id})
+
+    def test_authenticated_user_can_comment(self):
+        self.client.login(username='testuser', password='testuser')
+        response = self.client.post(self.comment_url, {"text": "commenthere"})
+        self.assertEqual(response.status_code, 302)
+        self.recipe.refresh_from_db()
+        self.assertEqual(self.recipe.comments.all().count(), 1)
+    
+    def test_unauthenticated_user_cannot_comment(self):
+        response = self.client.post(self.comment_url, {"text": "commenthere"})
+        self.assertEqual(response.status_code, 302)
+        self.recipe.refresh_from_db()
+        self.assertEqual(self.recipe.comments.all().count(), 0)
+    
+    def test_delete_comment_exists(self):
+        self.client.login(username='testuser', password='testuser')
+        self.client.post(self.comment_url, {"text": "commenthere"})
+        self.recipe.refresh_from_db()
+        comment = self.recipe.comments.all()[0]
+        response = self.client.get(reverse('website:delete_comment', kwargs={"comment_id": comment.id}))
+        self.assertEqual(response.status_code, 302)
+        self.recipe.refresh_from_db()
+        self.assertEqual(self.recipe.comments.all().count(), 0)
+
+    def test_delete_comment_not_exists(self):
+        self.client.login(username='testuser', password='testuser')
+        response = self.client.get(reverse('website:delete_comment', kwargs={"comment_id": 100}))
+        self.assertEqual(response.status_code, 404)
+    
+    def test_unauthenticated_user_cannot_delete(self):
+        self.client.login(username='testuser', password='testuser')
+        self.client.post(self.comment_url, {"text": "commenthere"})
+        self.client.logout()
+        self.recipe.refresh_from_db()
+        comment = self.recipe.comments.all()[0]
+        response = self.client.get(reverse('website:delete_comment', kwargs={"comment_id": comment.id}))
+        self.assertEqual(response.status_code, 302)
+        self.recipe.refresh_from_db()
+        self.assertEqual(self.recipe.comments.all().count(), 1)
+    
+    def test_wrong_user_cannot_delete(self):
+        self.client.login(username='testuser', password='testuser')
+        self.client.post(self.comment_url, {"text": "commenthere"})
+        self.client.logout()
+        self.recipe.refresh_from_db()
+        comment = self.recipe.comments.all()[0]
+        self.client.login(username='hacker', password='hacker')
+        response = self.client.get(reverse('website:delete_comment', kwargs={"comment_id": comment.id}))
+        self.assertEqual(response.status_code, 401)
+        self.recipe.refresh_from_db()
+        self.assertEqual(self.recipe.comments.all().count(), 1)
 
 class EditProfileTest(TestCase):
      def setUp(self):
