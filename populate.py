@@ -168,8 +168,7 @@ def populate():
             === For the corn slurry ===
             1/4 teaspoon black pepper
             1 teaspoon cornstarch
-            1/2 cup water
-            """,
+            1/2 cup water""",
             "instructions": """On a medium flame, heat 3 to 4 tablespoons of oil in a deep frying pan.
             Add your paneer and leave it to stand for a bit. Later stir and fry them on a medium heat until all sides are crispy. Remove the paneer from the pan and put on a paper towel to drain.
             Mix together your sauce ingredients to make the sauce. In a small bowl, mix together your corn slurry ingredients.

@@ -80,7 +80,7 @@ function enterKeyAddIngredient(event) {
 }
 
 function ctrlEnterAddStep(event) {
-    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+    if ((event.key === "Enter" || event.key === "\n") && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
         document.getElementById("add-step-button").click();
     }
