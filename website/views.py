@@ -310,7 +310,7 @@ def delete_comment(request,comment_id):
         comment.delete()
         return redirect('website:view_recipe',recipe_id=comment.recipe.id)
     else:
-        return HttpResponse("Cannot delete comment", status=404)
+        return HttpResponse("Cannot delete comment", status=401)
 
 
 @login_required
