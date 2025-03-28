@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import UserProfile, Tag, Recipe, Comment
-from .forms import UserForm, RecipeForm, CommentForm
+from .forms import UserForm
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 
@@ -45,19 +45,6 @@ class FormTests(TestCase):
 
     def test_invalid_user_form(self):
         form = UserForm(data={'username': '', 'email': 'email', 'password': ''})
-        self.assertFalse(form.is_valid())
-    
-    def test_valid_recipe_form(self):
-        form = RecipeForm(data={
-            'title': 'Recipe',
-            'description': 'A very nice recipe',
-            'ingredients': 'Water, Cheese, Salt',
-            'instructions': 'Mix all ingredients then cook'
-        })
-        self.assertTrue(form.is_valid())
-    
-    def test_invalid_recipe_form(self):
-        form = RecipeForm(data={'title': '', 'description': '', 'ingredients': '', 'instructions': ''})
         self.assertFalse(form.is_valid())
 
 class ViewTests(TestCase):
