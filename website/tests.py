@@ -241,4 +241,31 @@ class EditRecipeTest(TestCase):
         self.assertEqual(self.recipe.description, 'new Description')
         self.assertEqual(response.status_code, 201)
      
+class DeleteRecipeTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testuser')
+        User.objects.create_user(username='hacker', password='hacker')
+        self.recipe = Recipe.objects.create(
+            poster=self.user,
+            title='original Title',
+            description='original Description',
+            ingredients='original Ingredient1',
+            instructions='original step',
+            date = timezone.now()
+        )
+        self.delete_url = reverse('website:delete_recipe', kwargs={'recipe_id': self.recipe.id})
+    
+    def test_delete_recipe_successfully(self):
+        self.client.login(username='testuser', password='testuser')
+        response = self.client.post(self.delete_url)
+        self.assertEqual(response.status_code, 302)
 
+    def test_delete_recipe_no_perms(self):
+        self.client.login(username='hacker', password='hacker')
+        response = self.client.post(self.delete_url)
+        self.assertEqual(response.status_code, 401)
+    
+    def test_delete_recipe_not_exist(self):
+        self.client.login(username='testuser', password='testuser')
+        response = self.client.post(reverse('website:delete_recipe', kwargs={'recipe_id': 100}))
+        self.assertEqual(response.status_code, 404)
