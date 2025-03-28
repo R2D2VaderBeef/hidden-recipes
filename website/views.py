@@ -284,15 +284,17 @@ def view_recipe(request, recipe_id):
         form = CommentForm()
         
         if request.method == "POST":
-             form = CommentForm(request.POST)
-             if form.is_valid():
-                comment = form.save(commit=False)
-                comment.poster = request.user
-                comment.recipe = recipe
-                comment.save()
+            if not request.user.is_authenticated:
                 return redirect('website:view_recipe', recipe_id = recipe.id)
-             else:
-                form = CommentForm()
+            form = CommentForm(request.POST)
+            if form.is_valid():
+               comment = form.save(commit=False)
+               comment.poster = request.user
+               comment.recipe = recipe
+               comment.save()
+               return redirect('website:view_recipe', recipe_id = recipe.id)
+            else:
+               form = CommentForm()
 
                 
     except Recipe.DoesNotExist:
